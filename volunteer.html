@@ -1,0 +1,453 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Become a Volunteer | Hope & Care Bangladesh</title>
+
+  <meta
+    name="description"
+    content="Join Hope & Care Bangladesh as a volunteer and learn how you can contribute to community development."
+  >
+
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <style>
+    .volunteer-hero {
+      padding: 70px 20px;
+      text-align: center;
+      background: #f0f8f1;
+    }
+
+    .volunteer-hero h1 {
+      margin-bottom: 16px;
+      color: #176b3a;
+    }
+
+    .volunteer-hero p {
+      max-width: 720px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    .volunteer-section {
+      padding: 55px 20px;
+    }
+
+    .volunteer-container {
+      max-width: 850px;
+      margin: 0 auto;
+    }
+
+    .volunteer-form {
+      padding: 28px;
+      border: 1px solid #dce8df;
+      border-radius: 14px;
+      background: #fff;
+      box-shadow: 0 8px 28px rgba(20, 70, 40, 0.06);
+    }
+
+    .volunteer-form h2 {
+      margin-top: 0;
+      color: #176b3a;
+    }
+
+    .form-notice {
+      margin-bottom: 24px;
+      padding: 14px 16px;
+      border-left: 4px solid #d5a326;
+      border-radius: 6px;
+      background: #fff9e8;
+      line-height: 1.7;
+    }
+
+    .form-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 20px;
+    }
+
+    .form-field {
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+      min-width: 0;
+    }
+
+    .form-field.full-width {
+      grid-column: 1 / -1;
+    }
+
+    .form-field label {
+      font-weight: 600;
+    }
+
+    .form-field input,
+    .form-field select,
+    .form-field textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      border: 1px solid #cbd8ce;
+      border-radius: 7px;
+      background: #fff;
+      color: #24352a;
+      font: inherit;
+    }
+
+    .form-field input:focus,
+    .form-field select:focus,
+    .form-field textarea:focus {
+      outline: 2px solid #2c8b50;
+      outline-offset: 2px;
+    }
+
+    .form-field textarea {
+      min-height: 120px;
+      resize: vertical;
+    }
+
+    .consent-row {
+      display: flex;
+      align-items: flex-start;
+      gap: 10px;
+      margin: 24px 0;
+      line-height: 1.7;
+    }
+
+    .consent-row input {
+      margin-top: 6px;
+      flex-shrink: 0;
+    }
+
+    .submit-button {
+      padding: 13px 22px;
+      border: 0;
+      border-radius: 7px;
+      background: #8a9b8e;
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      cursor: not-allowed;
+      opacity: 0.85;
+    }
+
+    .volunteer-help {
+      margin-top: 22px;
+      line-height: 1.8;
+      color: #536359;
+    }
+
+    @media (max-width: 600px) {
+      .form-grid {
+        grid-template-columns: 1fr;
+      }
+
+      .volunteer-form {
+        padding: 20px;
+      }
+
+      .volunteer-hero {
+        padding: 48px 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+
+      <a class="site-logo" href="index.html">
+        Hope &amp; Care Bangladesh
+      </a>
+
+      <button
+        class="menu-toggle"
+        id="menu-toggle"
+        type="button"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="primary-navigation"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="main-nav" id="primary-navigation">
+        <a href="index.html" data-en="Home" data-bn="হোম">হোম</a>
+        <a href="about.html" data-en="About Us" data-bn="আমাদের সম্পর্কে">আমাদের সম্পর্কে</a>
+        <a href="programs.html" data-en="Programs" data-bn="কার্যক্রম">কার্যক্রম</a>
+        <a href="projects.html" data-en="Projects" data-bn="প্রকল্প">প্রকল্প</a>
+        <a href="gallery.html" data-en="Gallery" data-bn="গ্যালারি">গ্যালারি</a>
+        <a href="news.html" data-en="News & Events" data-bn="খবর ও ইভেন্ট">খবর ও ইভেন্ট</a>
+        <a href="volunteer.html" aria-current="page" data-en="Volunteer" data-bn="স্বেচ্ছাসেবক">স্বেচ্ছাসেবক</a>
+        <a href="contact.html" data-en="Contact" data-bn="যোগাযোগ">যোগাযোগ</a>
+
+        <button
+          type="button"
+          id="language-toggle"
+          class="language-toggle"
+          aria-label="Switch language"
+        >
+          English
+        </button>
+      </nav>
+
+    </div>
+  </header>
+
+  <main>
+
+    <section class="volunteer-hero">
+      <div class="volunteer-container">
+        <h1
+          data-en="Become a Volunteer"
+          data-bn="স্বেচ্ছাসেবক হিসেবে যুক্ত হোন"
+        >স্বেচ্ছাসেবক হিসেবে যুক্ত হোন</h1>
+
+        <p
+          data-en="Share your time, skills and ideas to support community-focused work with Hope & Care Bangladesh."
+          data-bn="আপনার সময়, দক্ষতা ও ধারণা দিয়ে Hope & Care Bangladesh-এর জনকল্যাণমূলক কাজে সহযোগিতা করুন।"
+        >
+          আপনার সময়, দক্ষতা ও ধারণা দিয়ে Hope & Care Bangladesh-এর জনকল্যাণমূলক কাজে সহযোগিতা করুন।
+        </p>
+      </div>
+    </section>
+
+    <section class="volunteer-section">
+      <div class="volunteer-container">
+
+        <div class="volunteer-form">
+          <h2 data-en="Volunteer Interest Form" data-bn="স্বেচ্ছাসেবক আগ্রহ ফর্ম">
+            স্বেচ্ছাসেবক আগ্রহ ফর্ম
+          </h2>
+
+          <div class="form-notice">
+            <strong
+              data-en="Applications are not open yet."
+              data-bn="আবেদন গ্রহণ এখনো চালু হয়নি।"
+            >আবেদন গ্রহণ এখনো চালু হয়নি।</strong>
+
+            <span
+              data-en="This form is a preview. It is not connected to the application database yet, so your information will not be submitted or saved."
+              data-bn="এটি ফর্মের প্রাথমিক কাঠামো। এখনো আবেদন সংরক্ষণের ব্যবস্থার সঙ্গে যুক্ত নয়, তাই আপনার তথ্য জমা বা সংরক্ষণ হবে না।"
+            >
+              এটি ফর্মের প্রাথমিক কাঠামো। এখনো আবেদন সংরক্ষণের ব্যবস্থার সঙ্গে যুক্ত নয়, তাই আপনার তথ্য জমা বা সংরক্ষণ হবে না।
+            </span>
+          </div>
+
+          <form id="volunteer-form" data-hc-form="volunteer">
+            <div class="form-grid">
+
+              <div class="form-field">
+                <label for="volunteer-name" data-en="Full name *" data-bn="পূর্ণ নাম *">
+                  পূর্ণ নাম *
+                </label>
+                <input
+                  id="volunteer-name"
+                  name="name"
+                  type="text"
+                  autocomplete="name"
+                  required
+                  maxlength="100"
+                  disabled
+                >
+              </div>
+
+              <div class="form-field">
+                <label for="volunteer-email" data-en="Email address *" data-bn="ইমেইল ঠিকানা *">
+                  ইমেইল ঠিকানা *
+                </label>
+                <input
+                  id="volunteer-email"
+                  name="email"
+                  type="email"
+                  autocomplete="email"
+                  required
+                  maxlength="150"
+                  disabled
+                >
+              </div>
+
+              <div class="form-field">
+                <label for="volunteer-phone" data-en="Phone number *" data-bn="ফোন নম্বর *">
+                  ফোন নম্বর *
+                </label>
+                <input
+                  id="volunteer-phone"
+                  name="phone"
+                  type="tel"
+                  autocomplete="tel"
+                  required
+                  maxlength="25"
+                  disabled
+                >
+              </div>
+
+              <div class="form-field">
+                <label for="volunteer-location" data-en="District or location" data-bn="জেলা বা অবস্থান">
+                  জেলা বা অবস্থান
+                </label>
+                <input
+                  id="volunteer-location"
+                  name="location"
+                  type="text"
+                  autocomplete="address-level1"
+                  maxlength="100"
+                  disabled
+                >
+              </div>
+
+              <div class="form-field">
+                <label for="volunteer-interest" data-en="Area of interest *" data-bn="আগ্রহের ক্ষেত্র *">
+                  আগ্রহের ক্ষেত্র *
+                </label>
+                <select id="volunteer-interest" name="interest" required disabled>
+                  <option value="" data-en="Select an area" data-bn="একটি ক্ষেত্র নির্বাচন করুন">
+                    একটি ক্ষেত্র নির্বাচন করুন
+                  </option>
+                  <option value="community" data-en="Community activities" data-bn="কমিউনিটি কার্যক্রম">
+                    কমিউনিটি কার্যক্রম
+                  </option>
+                  <option value="education" data-en="Education support" data-bn="শিক্ষা সহায়তা">
+                    শিক্ষা সহায়তা
+                  </option>
+                  <option value="environment" data-en="Environment" data-bn="পরিবেশ">
+                    পরিবেশ
+                  </option>
+                  <option value="health-awareness" data-en="Health awareness" data-bn="স্বাস্থ্য সচেতনতা">
+                    স্বাস্থ্য সচেতনতা
+                  </option>
+                  <option value="communications" data-en="Communications and media" data-bn="যোগাযোগ ও মিডিয়া">
+                    যোগাযোগ ও মিডিয়া
+                  </option>
+                  <option value="admin" data-en="Administration and logistics" data-bn="প্রশাসন ও লজিস্টিকস">
+                    প্রশাসন ও লজিস্টিকস
+                  </option>
+                  <option value="other" data-en="Other" data-bn="অন্যান্য">
+                    অন্যান্য
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-field">
+                <label for="volunteer-availability" data-en="Availability" data-bn="সময় দেওয়ার সুযোগ">
+                  সময় দেওয়ার সুযোগ
+                </label>
+                <select id="volunteer-availability" name="availability" disabled>
+                  <option value="" data-en="Please select" data-bn="নির্বাচন করুন">
+                    নির্বাচন করুন
+                  </option>
+                  <option value="weekdays" data-en="Weekdays" data-bn="সপ্তাহের কর্মদিবস">
+                    সপ্তাহের কর্মদিবস
+                  </option>
+                  <option value="weekends" data-en="Weekends" data-bn="সাপ্তাহিক ছুটি">
+                    সাপ্তাহিক ছুটি
+                  </option>
+                  <option value="flexible" data-en="Flexible" data-bn="সুবিধামতো">
+                    সুবিধামতো
+                  </option>
+                  <option value="remote" data-en="Remote / online" data-bn="দূর থেকে / অনলাইনে">
+                    দূর থেকে / অনলাইনে
+                  </option>
+                </select>
+              </div>
+
+              <div class="form-field full-width">
+                <label for="volunteer-message" data-en="Tell us about your skills or interest" data-bn="আপনার দক্ষতা বা আগ্রহ সম্পর্কে লিখুন">
+                  আপনার দক্ষতা বা আগ্রহ সম্পর্কে লিখুন
+                </label>
+                <textarea
+                  id="volunteer-message"
+                  name="message"
+                  maxlength="1500"
+                  disabled
+                ></textarea>
+              </div>
+
+            </div>
+
+            <label class="consent-row" for="volunteer-consent">
+              <input
+                id="volunteer-consent"
+                name="consent"
+                type="checkbox"
+                required
+                disabled
+              >
+              <span
+                data-en="I agree that Hope & Care Bangladesh may use the information I provide to contact me about volunteering."
+                data-bn="স্বেচ্ছাসেবক কার্যক্রম সম্পর্কে আমার সঙ্গে যোগাযোগ করার জন্য Hope & Care Bangladesh আমার দেওয়া তথ্য ব্যবহার করতে পারবে—এতে আমি সম্মত।"
+              >
+                স্বেচ্ছাসেবক কার্যক্রম সম্পর্কে আমার সঙ্গে যোগাযোগ করার জন্য Hope & Care Bangladesh আমার দেওয়া তথ্য ব্যবহার করতে পারবে—এতে আমি সম্মত।
+              </span>
+            </label>
+
+            <button
+              class="submit-button"
+              type="submit"
+              disabled
+              data-en="Applications opening soon"
+              data-bn="আবেদন শিগগিরই চালু হবে"
+            >
+              আবেদন শিগগিরই চালু হবে
+            </button>
+          </form>
+
+          <p class="volunteer-help">
+            <span
+              data-en="Questions? Contact our team by email:"
+              data-bn="কোনো প্রশ্ন আছে? ইমেইলে আমাদের সঙ্গে যোগাযোগ করুন:"
+            >কোনো প্রশ্ন আছে? ইমেইলে আমাদের সঙ্গে যোগাযোগ করুন:</span>
+            <a href="mailto:hopeandcarebd@gmail.com">hopeandcarebd@gmail.com</a>
+          </p>
+        </div>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>
+        © <span id="current-year"></span>
+        Hope &amp; Care Bangladesh.
+        <span data-en="All rights reserved." data-bn="সর্বস্বত্ব সংরক্ষিত।">
+          সর্বস্বত্ব সংরক্ষিত।
+        </span>
+      </p>
+
+      <p>
+        Shalbahan, Tetulia, Panchagarh, Bangladesh
+      </p>
+
+      <p>
+        <a href="tel:+8801821988040">+880 1821-988040</a>
+        |
+        <a href="mailto:hopeandcarebd@gmail.com">hopeandcarebd@gmail.com</a>
+      </p>
+
+      <p>
+        <a
+          href="https://www.facebook.com/hopeandcarebd"
+          target="_blank"
+          rel="noopener noreferrer"
+        >Facebook</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="assets/js/language.js"></script>
+  <script src="assets/js/main.js"></script>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/form-handler.js"></script>
+
+</body>
+</html>

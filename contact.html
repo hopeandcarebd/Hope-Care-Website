@@ -1,0 +1,354 @@
+
+<!DOCTYPE html>
+<html lang="bn">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <title>Contact Us | Hope &amp; Care Bangladesh</title>
+  <meta
+    name="description"
+    content="Contact Hope & Care Bangladesh by phone, email or Facebook."
+  >
+
+  <link rel="stylesheet" href="assets/css/style.css">
+
+  <style>
+    .contact-hero {
+      padding: 65px 20px;
+      text-align: center;
+      background: #eff8f0;
+    }
+
+    .contact-hero h1,
+    .contact-section h2 {
+      color: #176b3a;
+    }
+
+    .contact-hero p {
+      max-width: 700px;
+      margin: 0 auto;
+      line-height: 1.8;
+    }
+
+    .contact-section {
+      padding: 48px 20px;
+    }
+
+    .contact-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 0.9fr) minmax(0, 1.1fr);
+      gap: 28px;
+      max-width: 1050px;
+      margin: 0 auto;
+    }
+
+    .contact-card {
+      padding: 26px;
+      border: 1px solid #dce8df;
+      border-radius: 12px;
+      background: #fff;
+      min-width: 0;
+    }
+
+    .contact-card h2 {
+      margin-top: 0;
+    }
+
+    .contact-details {
+      line-height: 1.9;
+      overflow-wrap: anywhere;
+    }
+
+    .contact-details p {
+      margin-bottom: 20px;
+    }
+
+    .contact-details a {
+      color: #176b3a;
+      overflow-wrap: anywhere;
+    }
+
+    .contact-notice {
+      padding: 14px;
+      margin-bottom: 22px;
+      border-left: 4px solid #d4a329;
+      border-radius: 6px;
+      background: #fff8e6;
+      line-height: 1.7;
+    }
+
+    .contact-form {
+      display: grid;
+      gap: 18px;
+    }
+
+    .contact-field {
+      display: grid;
+      gap: 8px;
+    }
+
+    .contact-field label {
+      font-weight: 600;
+    }
+
+    .contact-field input,
+    .contact-field select,
+    .contact-field textarea {
+      width: 100%;
+      box-sizing: border-box;
+      padding: 12px;
+      border: 1px solid #cbd8ce;
+      border-radius: 7px;
+      font: inherit;
+      background: #fff;
+    }
+
+    .contact-field textarea {
+      min-height: 140px;
+      resize: vertical;
+    }
+
+    .contact-field input:focus,
+    .contact-field select:focus,
+    .contact-field textarea:focus {
+      outline: 2px solid #2c8b50;
+      outline-offset: 2px;
+    }
+
+    .contact-submit {
+      padding: 13px 20px;
+      border: 0;
+      border-radius: 7px;
+      background: #8a9b8e;
+      color: #fff;
+      font: inherit;
+      font-weight: 700;
+      cursor: not-allowed;
+    }
+
+    @media (max-width: 760px) {
+      .contact-layout {
+        grid-template-columns: 1fr;
+      }
+
+      .contact-hero {
+        padding: 45px 18px;
+      }
+    }
+  </style>
+</head>
+
+<body>
+
+  <header class="site-header">
+    <div class="container header-inner">
+
+      <a class="site-logo" href="index.html">
+        Hope &amp; Care Bangladesh
+      </a>
+
+      <button
+        class="menu-toggle"
+        id="menu-toggle"
+        type="button"
+        aria-label="Open navigation menu"
+        aria-expanded="false"
+        aria-controls="primary-navigation"
+      >
+        <span></span>
+        <span></span>
+        <span></span>
+      </button>
+
+      <nav class="main-nav" id="primary-navigation">
+        <a href="index.html" data-en="Home" data-bn="হোম">হোম</a>
+        <a href="about.html" data-en="About Us" data-bn="আমাদের সম্পর্কে">আমাদের সম্পর্কে</a>
+        <a href="programs.html" data-en="Programs" data-bn="কার্যক্রম">কার্যক্রম</a>
+        <a href="projects.html" data-en="Projects" data-bn="প্রকল্প">প্রকল্প</a>
+        <a href="impact.html" data-en="Our Impact" data-bn="আমাদের প্রভাব">আমাদের প্রভাব</a>
+        <a href="gallery.html" data-en="Gallery" data-bn="গ্যালারি">গ্যালারি</a>
+        <a href="news.html" data-en="News & Events" data-bn="খবর ও ইভেন্ট">খবর ও ইভেন্ট</a>
+        <a href="volunteer.html" data-en="Volunteer" data-bn="স্বেচ্ছাসেবক">স্বেচ্ছাসেবক</a>
+        <a href="donate.html" data-en="Donate" data-bn="অনুদান">অনুদান</a>
+        <a href="contact.html" aria-current="page" data-en="Contact" data-bn="যোগাযোগ">যোগাযোগ</a>
+
+        <button
+          type="button"
+          id="language-toggle"
+          class="language-toggle"
+          aria-label="Switch language"
+        >English</button>
+      </nav>
+
+    </div>
+  </header>
+
+  <main>
+
+    <section class="contact-hero">
+      <div>
+        <h1 data-en="Contact Us" data-bn="যোগাযোগ করুন">যোগাযোগ করুন</h1>
+        <p
+          data-en="We welcome your questions, suggestions and interest in working with Hope & Care Bangladesh."
+          data-bn="Hope & Care Bangladesh-এর সঙ্গে কাজ করার আগ্রহ, প্রশ্ন ও পরামর্শকে আমরা স্বাগত জানাই।"
+        >
+          Hope & Care Bangladesh-এর সঙ্গে কাজ করার আগ্রহ, প্রশ্ন ও পরামর্শকে আমরা স্বাগত জানাই।
+        </p>
+      </div>
+    </section>
+
+    <section class="contact-section">
+      <div class="contact-layout">
+
+        <section class="contact-card">
+          <h2 data-en="Contact Information" data-bn="যোগাযোগের তথ্য">
+            যোগাযোগের তথ্য
+          </h2>
+
+          <div class="contact-details">
+
+            <p>
+              <strong data-en="Address" data-bn="ঠিকানা">ঠিকানা</strong><br>
+              Shalbahan, Tetulia, Panchagarh, Bangladesh
+            </p>
+
+            <p>
+              <strong data-en="Phone" data-bn="ফোন">ফোন</strong><br>
+              <a href="tel:+8801821988040">+880 1821-988040</a>
+            </p>
+
+            <p>
+              <strong data-en="Email" data-bn="ইমেইল">ইমেইল</strong><br>
+              <a href="mailto:hopeandcarebd@gmail.com">hopeandcarebd@gmail.com</a>
+            </p>
+
+            <p>
+              <strong data-en="Facebook" data-bn="ফেসবুক">ফেসবুক</strong><br>
+              <a
+                href="https://www.facebook.com/hopeandcarebd"
+                target="_blank"
+                rel="noopener noreferrer"
+                data-en="Visit our Facebook page"
+                data-bn="আমাদের Facebook পেজ দেখুন"
+              >আমাদের Facebook পেজ দেখুন</a>
+            </p>
+
+          </div>
+        </section>
+
+        <section class="contact-card">
+          <h2 data-en="Send a Message" data-bn="বার্তা পাঠান">বার্তা পাঠান</h2>
+
+          <div class="contact-notice">
+            <strong data-en="Form not connected yet." data-bn="ফর্ম এখনো সংযুক্ত নয়।">
+              ফর্ম এখনো সংযুক্ত নয়।
+            </strong>
+            <span
+              data-en="This is a preview only. The form will be enabled after the secure backend and spreadsheet storage are configured and tested."
+              data-bn="এটি শুধু প্রাথমিক কাঠামো। নিরাপদ backend ও Spreadsheet-এ তথ্য সংরক্ষণের ব্যবস্থা তৈরি ও পরীক্ষা করার পর ফর্ম চালু হবে।"
+            >
+              এটি শুধু প্রাথমিক কাঠামো। নিরাপদ backend ও Spreadsheet-এ তথ্য সংরক্ষণের ব্যবস্থা তৈরি ও পরীক্ষা করার পর ফর্ম চালু হবে।
+            </span>
+          </div>
+
+          <form class="contact-form" id="contact-form" data-hc-form="contact">
+
+            <div class="contact-field">
+              <label for="contact-name" data-en="Your name *" data-bn="আপনার নাম *">
+                আপনার নাম *
+              </label>
+              <input
+                id="contact-name"
+                name="name"
+                type="text"
+                maxlength="100"
+                autocomplete="name"
+                required
+                disabled
+              >
+            </div>
+
+            <div class="contact-field">
+              <label for="contact-email" data-en="Email address *" data-bn="ইমেইল ঠিকানা *">
+                ইমেইল ঠিকানা *
+              </label>
+              <input
+                id="contact-email"
+                name="email"
+                type="email"
+                maxlength="150"
+                autocomplete="email"
+                required
+                disabled
+              >
+            </div>
+
+            <div class="contact-field">
+              <label for="contact-subject" data-en="Message topic" data-bn="বার্তার বিষয়">
+                বার্তার বিষয়
+              </label>
+              <select id="contact-subject" name="subject" disabled>
+                <option value="general" data-en="General inquiry" data-bn="সাধারণ জিজ্ঞাসা">সাধারণ জিজ্ঞাসা</option>
+                <option value="volunteer" data-en="Volunteering" data-bn="স্বেচ্ছাসেবা">স্বেচ্ছাসেবা</option>
+                <option value="partnership" data-en="Partnership" data-bn="অংশীদারিত্ব">অংশীদারিত্ব</option>
+                <option value="donation" data-en="Donation inquiry" data-bn="অনুদান বিষয়ে জিজ্ঞাসা">অনুদান বিষয়ে জিজ্ঞাসা</option>
+                <option value="other" data-en="Other" data-bn="অন্যান্য">অন্যান্য</option>
+              </select>
+            </div>
+
+            <div class="contact-field">
+              <label for="contact-message" data-en="Your message *" data-bn="আপনার বার্তা *">
+                আপনার বার্তা *
+              </label>
+              <textarea
+                id="contact-message"
+                name="message"
+                maxlength="3000"
+                required
+                disabled
+              ></textarea>
+            </div>
+
+            <button class="contact-submit" type="submit" disabled
+              data-en="Form coming soon"
+              data-bn="ফর্ম শিগগিরই চালু হবে">
+              ফর্ম শিগগিরই চালু হবে
+            </button>
+
+          </form>
+        </section>
+
+      </div>
+    </section>
+
+  </main>
+
+  <footer class="site-footer">
+    <div class="container footer-inner">
+      <p>
+        © <span id="current-year"></span>
+        Hope &amp; Care Bangladesh.
+        <span data-en="All rights reserved." data-bn="সর্বস্বত্ব সংরক্ষিত।">
+          সর্বস্বত্ব সংরক্ষিত।
+        </span>
+      </p>
+
+      <p>Shalbahan, Tetulia, Panchagarh, Bangladesh</p>
+
+      <p>
+        <a href="tel:+8801821988040">+880 1821-988040</a>
+        |
+        <a href="mailto:hopeandcarebd@gmail.com">hopeandcarebd@gmail.com</a>
+      </p>
+    </div>
+  </footer>
+
+  <script src="assets/js/language.js"></script>
+  <script src="assets/js/main.js"></script>
+
+  <script src="assets/js/config.js"></script>
+  <script src="assets/js/form-handler.js"></script>
+
+</body>
+</html>
