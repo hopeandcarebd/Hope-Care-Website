@@ -39,6 +39,7 @@ function doPost(e){
     const p=parse_(e),a=String(p.action||p.kind||"");
     if(a==="contact"||a==="volunteer")return savePublicForm_(p,a);
     if(a==="adminLogin")return login_(p);
+    if(a==="adminLoginToken")return loginWithAdminToken_(p);
     if(a==="adminProjects"){auth_(p);return out_({ok:true,projects:allProjects_()})}
     if(a==="createProject"){auth_(p);return out_({ok:true,project:writeProject_(p,false)})}
     if(a==="updateProject"){auth_(p);return out_({ok:true,project:writeProject_(p,true)})}
@@ -57,6 +58,19 @@ function login_(p){
   ss_().getSheetByName(TAB.sessions).appendRow([hash_(token),claims.email,expires]);
   return out_({ok:true,email:claims.email,token,expiresAt:expires});
 }
+
+function loginWithAdminToken_(p){
+  const supplied=String(p.adminToken||"");
+  const expected=PropertiesService.getScriptProperties().getProperty("ADMIN_TOKEN");
+  if(!expected)throw Error("Backend setup incomplete: set ADMIN_TOKEN in Apps Script Script Properties.");
+  if(!supplied || supplied.length<16 || !constantTimeEquals_(supplied,expected))throw Error("Invalid Apps Script Token Value.");
+  const token=Utilities.getUuid()+Utilities.getUuid(),expires=Date.now()+21600000;
+  ss_().getSheetByName(TAB.sessions).appendRow([hash_(token),ADMIN_EMAIL,expires]);
+  return out_({ok:true,email:ADMIN_EMAIL,token,expiresAt:expires});
+}
+function constantTimeEquals_(a,b){
+  a=String(a);b=String(b);if(a.length!==b.length)return false;let diff=0;for(let i=0;i<a.length;i++)diff|=a.charCodeAt(i)^b.charCodeAt(i);return diff===0;
+}
 function verifyGoogleIdToken_(idToken){
   if(!idToken)throw Error("Google sign-in token missing. Please sign in again.");
   const clientId=PropertiesService.getScriptProperties().getProperty("GOOGLE_CLIENT_ID");
@@ -71,11 +85,13 @@ function verifyGoogleIdToken_(idToken){
   return c;
 }
 function auth_(p){
-  const claims=verifyGoogleIdToken_(String(p.idToken||""));
-  if(String(claims.email).toLowerCase()!==ADMIN_EMAIL.toLowerCase())throw Error("Unauthorized Google account.");
   const token=String(p.token||"");if(!token)throw Error("Admin session missing. Sign in again.");
+  // Session token is issued only after server-side verification of ADMIN_TOKEN or the legacy Google login.
   const rows=ss_().getSheetByName(TAB.sessions).getDataRange().getValues(),h=hash_(token),now=Date.now();
-  for(let i=rows.length-1;i>=1;i--)if(String(rows[i][0])===h&&String(rows[i][1]).toLowerCase()===ADMIN_EMAIL.toLowerCase()&&Number(rows[i][2])>now)return;
+  for(let i=rows.length-1;i>=1;i--)if(String(rows[i][0])===h&&String(rows[i][1]).toLowerCase()===ADMIN_EMAIL.toLowerCase()&&Number(rows[i][2])>now){
+    if(p.idToken){const claims=verifyGoogleIdToken_(String(p.idToken));if(String(claims.email).toLowerCase()!==ADMIN_EMAIL.toLowerCase())throw Error("Unauthorized Google account.");}
+    return;
+  }
   throw Error("Admin session expired. Sign in again.");
 }
 function savePublicForm_(p,kind){

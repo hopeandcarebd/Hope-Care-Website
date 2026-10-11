@@ -1,15 +1,5 @@
-# Hope & Care Bangladesh website
+# Hope & Care Bangladesh — Smart Admin Panel
 
-A bilingual static website with a Google Apps Script backend.
+Static GitHub Pages website with a branded token-login screen and admin interface. The admin login URL is `/admin/`.
 
-## Features
-- Responsive English/Bangla public website
-- Contact and volunteer form submissions to Google Sheets
-- Public published-project feed
-- Google ID-token-verified single-admin sign-in
-- Admin project create/edit/delete and draft/published/completed status
-- Editable core homepage content stored in Google Sheets
-- Admin media uploads to a Google Drive folder
-
-## Before launch
-Follow `SETUP.md` completely. The website will not have a working backend until you configure Apps Script and Google OAuth. Do not use real beneficiary-sensitive data until you have tested and reviewed the setup.
+**Important:** Configure the server-side `ADMIN_TOKEN` Script Property in Google Apps Script and redeploy the web app before using the login. Never commit the token to GitHub. Project/content forms are not yet fully connected to Google Sheets or Google Drive; see `SETUP.md` for setup and limitations.
