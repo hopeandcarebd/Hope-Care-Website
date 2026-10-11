@@ -1,101 +1,40 @@
 (() => {
-  const $ = (s, root = document) => root.querySelector(s);
-  const $$ = (s, root = document) => [...root.querySelectorAll(s)];
-  const loginScreen = $('#loginScreen'), adminApp = $('#adminApp'), loginForm = $('#loginForm');
-  const loginStatus = $('#loginStatus'), config = window.HC_CONFIG || {};
-  const sessionToken = () => sessionStorage.getItem('hc-admin-session') || '';
-  const showAdmin = () => { loginScreen.hidden = true; adminApp.hidden = false; navigate(location.hash.slice(1) || 'home'); };
-  const showLogin = () => { loginScreen.hidden = false; adminApp.hidden = true; };
-  function navigate(view) {
-    const valid = ['home','bms','finance','crm','internal-projects','website','projects','volunteers','contacts','content','media'];
-    if (!valid.includes(view)) view = 'home';
-    $$('.view').forEach(el => el.classList.toggle('active-view', el.dataset.panel === view));
-    $$('.nav-link').forEach(el => el.classList.toggle('active', el.dataset.view === view));
-    const titles = {home:['ADMINISTRATION PORTAL','Overview'],bms:['01 · PRIVATE MANAGEMENT','BMS / CRM'],finance:['PRIVATE · BMS','Finance & budgets'],crm:['PRIVATE · CRM','People & internal records'],'internal-projects':['PRIVATE · BMS','Internal projects'],website:['02 · PUBLIC WEBSITE','Website maintenance'],projects:['PUBLIC WEBSITE','Projects & publishing'],volunteers:['PUBLIC WEBSITE','Volunteers'],contacts:['PUBLIC WEBSITE','Contacts & messages'],content:['PUBLIC WEBSITE','Pages & content'],media:['PUBLIC WEBSITE','Media library']};
-    $('#pageEyebrow').textContent = titles[view][0]; $('#pageTitle').textContent = titles[view][1];
-    if (location.hash !== '#' + view) history.replaceState(null, '', '#' + view);
-    $('.sidebar').classList.remove('mobile-open');
+  'use strict';
+  const $ = (s, r=document) => r.querySelector(s), $$ = (s, r=document) => [...r.querySelectorAll(s)];
+  const config = window.HC_CONFIG || {}, loginScreen=$('#loginScreen'), app=$('#adminApp'), loginForm=$('#loginForm'), loginStatus=$('#loginStatus');
+  const token=()=>sessionStorage.getItem('hc-admin-session')||'';
+  const expired=()=>{const exp=Number(sessionStorage.getItem('hc-admin-expires')||0);return exp && Date.now()>exp;};
+  const say=(el,msg,kind='')=>{if(!el)return;el.className='status'+(kind?' '+kind:'');el.textContent=msg;};
+  async function api(action,data={},auth=true){
+    if(!config.apiUrl)throw Error('Apps Script API URL is missing in config.js.');
+    if(auth&&(!token()||expired())){logout();throw Error('Your session expired. Please sign in again.');}
+    const payload={action,...data}; if(auth)payload.token=token();
+    const res=await fetch(config.apiUrl,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify(payload)});
+    let out;try{out=await res.json()}catch(_){throw Error('Apps Script returned an unreadable response. Check the deployment URL and access settings.');}
+    if(!res.ok||!out.ok)throw Error(out.error||'The request failed.');return out;
   }
-  async function api(action, data = {}, authenticated = true) {
-    if (!config.apiUrl) throw new Error('Apps Script API URL is not configured in config.js.');
-    const payload = { action, ...data };
-    if (authenticated) {
-      if (!sessionToken()) throw new Error('Your session has expired. Please sign in again.');
-      payload.token = sessionToken();
-    }
-    const response = await fetch(config.apiUrl, { method: 'POST', headers: { 'Content-Type': 'text/plain;charset=utf-8' }, body: JSON.stringify(payload) });
-    let result;
-    try { result = await response.json(); } catch (_) { throw new Error('Apps Script returned an unreadable response. Check deployment and permissions.'); }
-    if (!response.ok || !result.ok) throw new Error(result.error || 'Request failed. Please try again.');
-    return result;
-  }
-  if (sessionToken()) showAdmin(); else showLogin();
-  loginForm.addEventListener('submit', async e => {
-    e.preventDefault(); const token = $('#adminToken').value.trim();
-    if (!config.apiUrl) { loginStatus.textContent = 'Apps Script API URL is not configured.'; return; }
-    loginStatus.textContent = 'Verifying token…'; const button = $('button[type="submit"]', loginForm); button.disabled = true;
-    try {
-      const result = await api('adminLoginToken', { adminToken: token }, false);
-      sessionStorage.setItem('hc-admin-session', result.token); sessionStorage.setItem('hc-admin-expires', String(result.expiresAt || ''));
-      $('#adminToken').value = ''; loginStatus.textContent = ''; showAdmin(); loadProjects().catch(() => {}); loadContent().catch(() => {});
-    } catch (err) { loginStatus.textContent = err.message || 'Unable to connect to Apps Script.'; }
-    finally { button.disabled = false; }
-  });
-  $('#logoutBtn').addEventListener('click', () => { sessionStorage.removeItem('hc-admin-session'); sessionStorage.removeItem('hc-admin-expires'); showLogin(); });
-  $$('.nav-link').forEach(a => a.addEventListener('click', e => { e.preventDefault(); navigate(a.dataset.view); }));
-  $$('[data-go]').forEach(el => el.addEventListener('click', () => navigate(el.dataset.go)));
-  $('#mobileMenu').addEventListener('click', () => $('.sidebar').classList.toggle('mobile-open'));
-  window.addEventListener('hashchange', () => navigate(location.hash.slice(1)));
-
-  const projectForm = $('#projectForm'), projectStatus = $('#projectStatus');
-  async function loadProjects() {
-    const target = $('#projectsList'); target.innerHTML = '<p class="muted">Loading projects…</p>';
-    try {
-      const result = await api('adminProjects'); const projects = result.projects || [];
-      $('#projectCount').textContent = projects.length;
-      if (!projects.length) { target.innerHTML = '<p class="muted">No projects found yet. Create your first project above.</p>'; return; }
-      target.replaceChildren();
-      projects.forEach(p => {
-        const item = document.createElement('article'); item.className = 'record-item';
-        const details = document.createElement('div'); details.className = 'record-details';
-        const title = document.createElement('b'); title.textContent = p.title || 'Untitled project';
-        const desc = document.createElement('p'); desc.textContent = [p.category, p.location, p.status].filter(Boolean).join(' · ');
-        details.append(title, desc); const badge = document.createElement('span'); badge.className = 'status-pill ' + (p.status === 'published' ? 'published' : 'pending'); badge.textContent = p.status || 'draft'; item.append(details, badge); target.append(item);
-      });
-    } catch (err) { target.innerHTML = ''; const p = document.createElement('p'); p.className = 'status error'; p.textContent = err.message; target.append(p); }
-  }
-  $('#refreshProjects').addEventListener('click', loadProjects);
-  projectForm.addEventListener('submit', async e => {
-    e.preventDefault(); if (!projectForm.reportValidity()) return;
-    const button = $('button[type="submit"]', projectForm); button.disabled = true; projectStatus.className = 'status'; projectStatus.textContent = 'Saving project to Google Sheets…';
-    const fd = new FormData(projectForm); const data = Object.fromEntries(fd.entries());
-    try {
-      const result = await api('createProject', data);
-      projectStatus.className = 'status success'; projectStatus.textContent = 'Project saved successfully to the backend. Status: ' + ((result.project && result.project.status) || data.status || 'draft') + '.';
-      projectForm.reset(); await loadProjects();
-    } catch (err) { projectStatus.className = 'status error'; projectStatus.textContent = 'Save failed: ' + err.message; }
-    finally { button.disabled = false; }
-  });
-
-  const contentForm = $('#contentForm'), contentStatus = $('#contentStatus');
-  function fillContent(content = {}) {
-    ['heroTitle','contactEmail','aboutText','missionText','visionText','heroCopy'].forEach(key => {
-      const field = contentForm.elements.namedItem(key); if (field && content[key] !== undefined) field.value = content[key];
-    });
-  }
-  async function loadContent() {
-    contentStatus.className = 'status'; contentStatus.textContent = 'Loading saved content…';
-    try { const result = await api('getContent'); fillContent(result.content || {}); contentStatus.textContent = 'Saved content loaded.'; }
-    catch (err) { contentStatus.className = 'status error'; contentStatus.textContent = 'Could not load content: ' + err.message; }
-  }
-  $('#loadContent').addEventListener('click', loadContent);
-  contentForm.addEventListener('submit', async e => {
-    e.preventDefault(); if (!contentForm.reportValidity()) return;
-    const button = $('button[type="submit"]', contentForm); button.disabled = true; contentStatus.className = 'status'; contentStatus.textContent = 'Saving changes to Google Sheets…';
-    const content = {};
-    ['heroTitle','contactEmail','aboutText','missionText','visionText','heroCopy'].forEach(key => content[key] = contentForm.elements.namedItem(key).value.trim());
-    try { const result = await api('saveContent', { content }); fillContent(result.content || content); contentStatus.className = 'status success'; contentStatus.textContent = 'CMS changes saved successfully.'; }
-    catch (err) { contentStatus.className = 'status error'; contentStatus.textContent = 'Save failed: ' + err.message; }
-    finally { button.disabled = false; }
-  });
+  function showApp(){loginScreen.hidden=true;app.hidden=false;navigate(location.hash.slice(1)||'home');refreshOverview();}
+  function logout(){sessionStorage.removeItem('hc-admin-session');sessionStorage.removeItem('hc-admin-expires');app.hidden=true;loginScreen.hidden=false;}
+  function navigate(view){const valid=['home','bms','finance','crm','internal-projects','website','projects','volunteers','contacts','content','media'];if(!valid.includes(view))view='home';$$('.view').forEach(x=>x.classList.toggle('active-view',x.dataset.panel===view));$$('.nav-link').forEach(x=>x.classList.toggle('active',x.dataset.view===view));const t={home:['ADMINISTRATION PORTAL','Overview'],bms:['01 · PRIVATE MANAGEMENT','BMS / CRM'],finance:['PRIVATE WORKSPACE','Finance & budgets'],crm:['PRIVATE WORKSPACE','People & records'],'internal-projects':['PRIVATE WORKSPACE','Internal projects'],website:['02 · PUBLIC WEBSITE','Website maintenance'],projects:['PUBLISHING','Projects & publishing'],volunteers:['PEOPLE','Volunteer applications'],contacts:['INBOX','Contacts & messages'],content:['CONTENT MANAGEMENT','Pages & content'],media:['MEDIA','Media library']}[view];$('#pageEyebrow').textContent=t[0];$('#pageTitle').textContent=t[1];if(location.hash!=='#'+view)history.replaceState(null,'','#'+view);$('.sidebar').classList.remove('mobile-open');if(token()){if(view==='projects')loadProjects();if(view==='content')loadContent();if(view==='volunteers')loadInbox('volunteer');if(view==='contacts')loadInbox('contact');if(['finance','crm','internal-projects'].includes(view))loadPrivate(({finance:'finance',crm:'people','internal-projects':'internalProjects'})[view]);}}
+  if(token()&&!expired())showApp();else logout();
+  loginForm.addEventListener('submit',async e=>{e.preventDefault();const b=$('button[type="submit"]',loginForm);b.disabled=true;say(loginStatus,'Verifying your token…');try{const r=await api('adminLoginToken',{adminToken:$('#adminToken').value.trim()},false);sessionStorage.setItem('hc-admin-session',r.token);sessionStorage.setItem('hc-admin-expires',String(r.expiresAt||''));$('#adminToken').value='';say(loginStatus,'');showApp();}catch(err){say(loginStatus,err.message,'error')}finally{b.disabled=false;}});
+  $('#logoutBtn').addEventListener('click',logout);$$('.nav-link').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();navigate(a.dataset.view)}));$$('[data-go]').forEach(x=>x.addEventListener('click',()=>navigate(x.dataset.go)));$('#mobileMenu').addEventListener('click',()=>$('.sidebar').classList.toggle('mobile-open'));window.addEventListener('hashchange',()=>navigate(location.hash.slice(1)));
+  async function refreshOverview(){try{const r=await api('adminProjects');$('#projectCount').textContent=(r.projects||[]).length;}catch(_){$('#projectCount').textContent='—';}}
+  const projectForm=$('#projectForm'),projectStatus=$('#projectStatus'); let projects=[];
+  async function loadProjects(){const target=$('#projectsList');target.innerHTML='<p class="muted">Loading projects…</p>';try{const r=await api('adminProjects');projects=r.projects||[];$('#projectCount').textContent=projects.length;target.replaceChildren();if(!projects.length){target.innerHTML='<p class="muted">No project records yet. Create your first draft above.</p>';return;}projects.forEach(p=>{const row=document.createElement('article');row.className='record-item';const d=document.createElement('div');d.className='record-details';const b=document.createElement('b');b.textContent=p.title||'Untitled project';const desc=document.createElement('p');desc.textContent=[p.category,p.location,p.status].filter(Boolean).join(' · ');d.append(b,desc);const actions=document.createElement('div');actions.className='record-actions';const edit=btn('Edit','secondary',()=>{['title','category','description','location','status','imageUrl'].forEach(k=>{if(projectForm.elements.namedItem(k))projectForm.elements.namedItem(k).value=p[k]||''});let id=projectForm.elements.namedItem('id');if(!id){id=document.createElement('input');id.type='hidden';id.name='id';projectForm.append(id)}id.value=p.id;projectStatus.textContent='Editing existing project: '+p.title;projectForm.scrollIntoView({behavior:'smooth',block:'start'});});const del=btn('Delete','danger',async()=>{if(!confirm('Delete project “'+p.title+'”? This cannot be undone.'))return;try{await api('deleteProject',{id:p.id});await loadProjects();}catch(err){alert(err.message)}});actions.append(edit,del);const badge=document.createElement('span');badge.className='status-pill '+(p.status==='published'?'published':'pending');badge.textContent=p.status||'draft';row.append(d,badge,actions);target.append(row);});}catch(err){target.replaceChildren();const p=document.createElement('p');p.className='status error';p.textContent=err.message;target.append(p);}}
+  function btn(text,variant,fn){const b=document.createElement('button');b.type='button';b.className='btn '+variant;b.textContent=text;b.addEventListener('click',fn);return b;}
+  $('#refreshProjects').addEventListener('click',loadProjects);projectForm.addEventListener('reset',()=>{setTimeout(()=>{const id=projectForm.elements.namedItem('id');if(id)id.value='';say(projectStatus,'');},0)});
+  projectForm.addEventListener('submit',async e=>{e.preventDefault();if(!projectForm.reportValidity())return;const b=$('button[type="submit"]',projectForm);b.disabled=true;say(projectStatus,'Saving project…');const data=Object.fromEntries(new FormData(projectForm).entries());const updating=!!data.id;try{const r=await api(updating?'updateProject':'createProject',data);say(projectStatus,'Project saved successfully as '+((r.project&&r.project.status)||data.status||'draft')+'.','success');projectForm.reset();await loadProjects();}catch(err){say(projectStatus,'Save failed: '+err.message,'error')}finally{b.disabled=false;}});
+  const contentForm=$('#contentForm'),contentStatus=$('#contentStatus');const contentKeys=['heroTitle','heroCopy','aboutText','missionText','visionText','valuesText','activitiesIntro','projectsIntro','contactEmail','logoUrl','bannerUrl'];
+  function fillContent(o={}){contentKeys.forEach(k=>{const f=contentForm.elements.namedItem(k);if(f&&o[k]!==undefined)f.value=o[k]})}
+  async function loadContent(){say(contentStatus,'Loading saved website content…');try{const r=await api('getContent');fillContent(r.content||{});say(contentStatus,'Saved content loaded.','success')}catch(err){say(contentStatus,'Could not load content: '+err.message,'error')}}
+  $('#loadContent').addEventListener('click',loadContent);contentForm.addEventListener('submit',async e=>{e.preventDefault();const b=$('button[type="submit"]',contentForm);b.disabled=true;say(contentStatus,'Saving changes to Google Sheets…');const content={};contentKeys.forEach(k=>{const f=contentForm.elements.namedItem(k);if(f)content[k]=f.value.trim()});try{const r=await api('saveContent',{content});fillContent(r.content||content);say(contentStatus,'Website content saved successfully.','success')}catch(err){say(contentStatus,'Save failed: '+err.message,'error')}finally{b.disabled=false}});
+  async function loadPrivate(type){const target=$('#private-'+type+'-list');if(!target)return;target.innerHTML='<p class="muted">Loading private records…</p>';try{const r=await api('privateList',{type});target.replaceChildren();const items=r.items||[];if(!items.length){target.innerHTML='<p class="muted">No records yet.</p>';return;}items.forEach(item=>{const row=document.createElement('article');row.className='record-item';const d=document.createElement('div');d.className='record-details';const title=document.createElement('b');title.textContent=item.data.title||item.data.name||'Untitled record';const desc=document.createElement('p');desc.textContent=[item.data.recordType,item.data.role,item.data.amount!=null?'BDT '+item.data.amount:'',item.status,item.updatedAt].filter(Boolean).join(' · ');d.append(title,desc);const actions=document.createElement('div');actions.className='record-actions';actions.append(btn('Edit','secondary',()=>{const form=$('.privateForm[data-type="'+type+'"]');if(!form)return;form.elements.namedItem('id').value=item.id;Object.entries(item.data||{}).forEach(([k,v])=>{const f=form.elements.namedItem(k);if(f)f.value=v==null?'':v});const st=form.elements.namedItem('status');if(st)st.value=item.status||st.value;form.scrollIntoView({behavior:'smooth',block:'start'});}));actions.append(btn('Delete','danger',async()=>{if(!confirm('Delete this private record permanently?'))return;try{await api('privateDelete',{type,id:item.id});await loadPrivate(type)}catch(err){alert(err.message)}}));row.append(d,actions);target.append(row);});}catch(err){target.innerHTML='';const p=document.createElement('p');p.className='status error';p.textContent=err.message;target.append(p)}}
+  $$('[data-refresh-private]').forEach(b=>b.addEventListener('click',()=>loadPrivate(b.dataset.refreshPrivate)));
+  $$('.privateForm').forEach(form=>form.addEventListener('reset',()=>setTimeout(()=>{form.elements.namedItem('id').value='';say($('.status',form),'');},0)));
+  $$('.privateForm').forEach(form=>form.addEventListener('submit',async e=>{e.preventDefault();if(!form.reportValidity())return;const b=$('button[type="submit"]',form);b.disabled=true;const status=$('.status',form);say(status,'Saving private record…');const fd=Object.fromEntries(new FormData(form).entries());const id=fd.id;delete fd.id;const recordStatus=fd.status||'active';delete fd.status;try{await api('privateSave',{type:form.dataset.type,id,status:recordStatus,data:fd});say(status,'Private record saved.','success');form.reset();await loadPrivate(form.dataset.type)}catch(err){say(status,'Save failed: '+err.message,'error')}finally{b.disabled=false}}));
+  async function loadInbox(type){const target=type==='contact'?$('#contactsList'):$('#volunteersList');target.innerHTML='<p class="muted">Loading messages…</p>';try{const r=await api(type==='contact'?'adminContacts':'adminVolunteers');target.replaceChildren();const items=r.items||[];if(!items.length){target.innerHTML='<p class="muted">No submissions found.</p>';return;}items.forEach(item=>{const row=document.createElement('article');row.className='record-item';const d=document.createElement('div');d.className='record-details';const b=document.createElement('b');b.textContent=item.name+' · '+(item.subject||item.email||'');const p=document.createElement('p');p.textContent=[item.email,item.phone,item.createdAt,item.message].filter(Boolean).join(' · ');d.append(b,p);const select=document.createElement('select');['new','reviewing','replied','accepted','declined','archived'].forEach(v=>{const o=document.createElement('option');o.value=v;o.textContent=v;if(v===item.status)o.selected=true;select.append(o)});select.setAttribute('aria-label','Message status');select.addEventListener('change',async()=>{try{await api('updateInboxStatus',{type,id:item.id,status:select.value});}catch(err){alert(err.message)}});row.append(d,select);target.append(row);});}catch(err){target.replaceChildren();const p=document.createElement('p');p.className='status error';p.textContent=err.message;target.append(p)}}
+  $('#refreshContacts').addEventListener('click',()=>loadInbox('contact'));$('#refreshVolunteers').addEventListener('click',()=>loadInbox('volunteer'));
+  const mediaForm=$('#mediaForm');mediaForm.addEventListener('submit',async e=>{e.preventDefault();const file=mediaForm.elements.namedItem('file').files[0];const status=$('#mediaStatus');if(!file)return;if(file.size>5*1024*1024){say(status,'Maximum file size is 5 MB.','error');return;}const b=$('button[type="submit"]',mediaForm);b.disabled=true;say(status,'Uploading file to Google Drive…');try{const base64=await new Promise((resolve,reject)=>{const reader=new FileReader();reader.onerror=()=>reject(Error('Could not read file.'));reader.onload=()=>resolve(String(reader.result).split(',')[1]||'');reader.readAsDataURL(file)});const publicApproved=mediaForm.elements.namedItem('isPublic').value==='true';const r=await api('uploadFile',{fileName:file.name,mimeType:file.type,base64,description:mediaForm.elements.namedItem('description').value,publicApproved});say(status,'Upload successful ('+r.file.visibility+'). URL: '+r.file.url,'success');mediaForm.reset();}catch(err){say(status,'Upload failed: '+err.message,'error')}finally{b.disabled=false}});
+  if(token()&&!expired()){loadProjects().catch(()=>{});loadContent().catch(()=>{});}
 })();
