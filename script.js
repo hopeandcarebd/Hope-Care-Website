@@ -29,3 +29,24 @@ async function loadManagedContent(){
   }catch(e){console.warn("Managed website content unavailable; default content remains.",e)}
 }
 loadManagedContent();
+
+// Same-origin visual editor mode used inside the admin iframe.
+(function visualEditorMode(){
+  const params=new URLSearchParams(location.search);
+  if(params.get('editor')!=='1') return;
+  const editableMap={
+    heroTitle:'heroTitle',heroCopy:'heroCopy',aboutText:'aboutText',missionText:'missionText',
+    visionText:'visionText',valuesText:'valuesText',activitiesIntro:'activitiesIntro',projectsIntro:'projectsIntro'
+  };
+  const style=document.createElement('style');
+  style.textContent='[data-hc-editable="1"]{outline:2px dashed #86b93d!important;outline-offset:4px;cursor:text!important;position:relative}[data-hc-editable="1"]:hover{background-color:rgba(216,242,142,.12)}body.hc-editor-active:before{content:"VISUAL EDITOR · Click highlighted text to edit · Changes are sent to the admin panel";display:block;position:sticky;top:0;z-index:99999;background:#102d23;color:#fff;padding:9px 14px;font:600 12px system-ui;text-align:center}';document.head.append(style);
+  document.body.classList.add('hc-editor-active');
+  Object.entries(editableMap).forEach(([key,field])=>{
+    document.querySelectorAll(`[data-i="${key}"]`).forEach(el=>{
+      el.dataset.hcEditable='1';el.dataset.hcField=field;el.title='Click to edit this content';
+      el.addEventListener('click',e=>{e.preventDefault();e.stopPropagation();el.contentEditable='true';el.focus();});
+      el.addEventListener('blur',()=>{el.contentEditable='false';const value=el.innerText.trim();parent.postMessage({type:'hc-visual-edit',key:field,value},location.origin);});
+      el.addEventListener('keydown',e=>{if(e.key==='Escape'){el.contentEditable='false';el.blur()}if(e.key==='Enter'&&!e.shiftKey&&el.tagName!=='TEXTAREA'){e.preventDefault();el.blur()}});
+    });
+  });
+})();
