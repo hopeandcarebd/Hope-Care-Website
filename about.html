@@ -9,6 +9,36 @@
   <meta name="description" content="Learn about Hope & Care Bangladesh, our organizational profile, values and aspirations.">
 
   <link rel="stylesheet" href="assets/css/style.css">
+
+  <style>
+    .about-story-hero{position:relative;overflow:hidden;color:#fff;background:linear-gradient(90deg,rgba(20,43,33,.91),rgba(20,43,33,.64) 58%,rgba(20,43,33,.20)),url('assets/images/hero-community.jpg') center 45%/cover no-repeat;padding:clamp(78px,10vw,138px) 0;}
+    .about-story-hero .eyebrow,.about-story-hero h1,.about-story-hero .hero-description{color:#fff;max-width:760px}
+    .about-story-hero h1{font-size:clamp(2.4rem,5.4vw,4.6rem);line-height:1.08;letter-spacing:-.035em}
+    .about-story-hero .hero-description{font-size:clamp(1rem,1.5vw,1.2rem);line-height:1.8;max-width:660px}
+    .about-hero-cta{display:inline-flex;margin-top:16px;background:#f5d66e;color:#25332b;border:1px solid #f5d66e;font-weight:750}
+    .about-focus-section{background:#faf8f0}
+    .about-focus-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:22px;margin-top:34px}
+    .about-focus-card{overflow:hidden;background:#fff;border:1px solid #e6e9df;border-radius:18px;box-shadow:0 10px 28px rgba(25,54,38,.06);transition:transform .25s ease,box-shadow .25s ease}
+    .about-focus-card:hover{transform:translateY(-5px);box-shadow:0 18px 38px rgba(25,54,38,.12)}
+    .about-focus-card img{display:block;width:100%;height:210px;object-fit:cover}
+    .about-focus-card>div{padding:22px 22px 24px}
+    .about-focus-card h3{margin:0 0 9px;color:#246b45;font-size:1.16rem}
+    .about-focus-card p{margin:0;color:#56635b;line-height:1.75}
+    .about-team-section{background:#fff}
+    .about-team-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:24px;margin-top:34px;align-items:stretch}
+    .about-team-card{overflow:hidden;border:1px solid #e2e9e1;border-radius:20px;background:#fff;box-shadow:0 12px 32px rgba(27,62,42,.07);transition:transform .25s ease,box-shadow .25s ease}
+    .about-team-card:hover{transform:translateY(-5px);box-shadow:0 20px 40px rgba(27,62,42,.13)}
+    .about-team-photo{height:300px;background:linear-gradient(135deg,#e7f0e6,#f8f4e8);overflow:hidden}
+    .about-team-photo img{display:block;width:100%;height:100%;object-fit:contain;object-position:center center;background:#f7f8f5;transition:transform .35s ease}
+    .about-team-card:hover .about-team-photo img{transform:scale(1.015)}
+    .about-team-info{padding:22px 20px 24px;text-align:center;border-top:3px solid #f5d66e}
+    .about-team-info h3{margin:0 0 8px;color:#246b45;font-size:1.16rem;line-height:1.4}
+    .about-team-info p{margin:0;color:#5d6a61;font-weight:600;line-height:1.6}
+    @media(max-width:900px){.about-focus-grid,.about-team-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.about-team-card:last-child{grid-column:1/-1;max-width:calc(50% - 12px);width:100%;justify-self:center}}
+    @media(max-width:600px){.about-story-hero{padding:66px 0;background-position:58% center}.about-focus-grid,.about-team-grid{grid-template-columns:1fr;gap:16px}.about-team-card:last-child{grid-column:auto;max-width:none}.about-focus-card img{height:205px}.about-team-photo{height:320px}.about-team-info{padding:19px 16px 22px}}
+    @media(prefers-reduced-motion:reduce){.about-focus-card,.about-team-card,.about-team-photo img{transition:none}.about-focus-card:hover,.about-team-card:hover{transform:none}}
+  </style>
+
   <script src="assets/js/language.js" defer></script>
   <script src="assets/js/main.js" defer></script>
 </head>
@@ -58,8 +88,8 @@
 
   <main id="main-content">
 
-    <!-- Page introduction -->
-    <section class="hero">
+    <!-- About hero -->
+    <section class="hero about-story-hero">
       <div class="container">
         <span class="eyebrow"
               data-en="GET TO KNOW US" data-bn="আমাদের সম্পর্কে জানুন">
@@ -72,11 +102,11 @@
         </h1>
 
         <p class="hero-description"
-           data-en="Discover our organization, our aspirations and our commitment to sharing information responsibly."
-           data-bn="আমাদের সংস্থা, ভবিষ্যৎ আকাঙ্ক্ষা এবং দায়িত্বশীলভাবে তথ্য প্রকাশের অঙ্গীকার সম্পর্কে জানুন।">
-          Discover our organization, our aspirations and our commitment
-          to sharing information responsibly.
+           data-en="Rooted in Shalbahan, Tetulia, Panchagarh, we believe caring communities grow through people working together."
+           data-bn="শালবাহান, তেঁতুলিয়া, পঞ্চগড়কে কেন্দ্র করে আমরা বিশ্বাস করি—মানুষ একসঙ্গে কাজ করলে যত্নশীল সমাজ গড়ে ওঠে।">
+          Rooted in Shalbahan, Tetulia, Panchagarh, we believe caring communities grow through people working together.
         </p>
+        <a class="button about-hero-cta" href="#our-focus" data-en="Explore Our Work" data-bn="আমাদের কাজ দেখুন">Explore Our Work</a>
       </div>
     </section>
 
@@ -120,7 +150,43 @@
       </div>
     </section>
 
-    <!-- Mission and vision draft -->
+
+    <!-- Focus areas -->
+    <section class="section about-focus-section" id="our-focus">
+      <div class="container">
+        <div class="section-header centered">
+          <span class="eyebrow" data-en="HOW WE HELP" data-bn="আমাদের কাজের ক্ষেত্র">HOW WE HELP</span>
+          <h2 data-en="Our Focus Areas" data-bn="আমাদের কাজের ক্ষেত্রসমূহ">Our Focus Areas</h2>
+          <p data-en="Explore the areas that can bring people together and support community wellbeing." data-bn="মানুষকে একত্রিত করা ও সমাজের কল্যাণে সহায়তা করতে পারে—এমন কয়েকটি কাজের ক্ষেত্র দেখুন।">Explore the areas that can bring people together and support community wellbeing.</p>
+        </div>
+        <div class="about-focus-grid">
+          <article class="about-focus-card"><img src="assets/images/Education & Awareness.jpg" alt="Education and awareness activity" loading="lazy"><div><h3 data-en="Education & Awareness" data-bn="শিক্ষা ও সচেতনতা">Education & Awareness</h3><p data-en="Encouraging learning, awareness and access to useful information." data-bn="শেখা, সচেতনতা এবং প্রয়োজনীয় তথ্যপ্রাপ্তিতে উৎসাহ দেওয়া।">Encouraging learning, awareness and access to useful information.</p></div></article>
+          <article class="about-focus-card"><img src="assets/images/Community Support.jpg" alt="Community support activity" loading="lazy"><div><h3 data-en="Community Support" data-bn="সমাজের পাশে">Community Support</h3><p data-en="Working alongside people and responding thoughtfully to local needs." data-bn="মানুষের পাশে থেকে স্থানীয় চাহিদায় দায়িত্বশীলভাবে সাড়া দেওয়া।">Working alongside people and responding thoughtfully to local needs.</p></div></article>
+          <article class="about-focus-card"><img src="assets/images/Volunteer Engagement.jpg" alt="Volunteer engagement" loading="lazy"><div><h3 data-en="Volunteer Engagement" data-bn="স্বেচ্ছাসেবী অংশগ্রহণ">Volunteer Engagement</h3><p data-en="Making space for people to contribute their time and skills." data-bn="মানুষের সময় ও দক্ষতা কাজে লাগানোর সুযোগ তৈরি করা।">Making space for people to contribute their time and skills.</p></div></article>
+          <article class="about-focus-card"><img src="assets/images/Volunteer & Participate.jpg" alt="Community participation" loading="lazy"><div><h3 data-en="Community Participation" data-bn="সামাজিক অংশগ্রহণ">Community Participation</h3><p data-en="Building cooperation and shared responsibility in community initiatives." data-bn="সামাজিক উদ্যোগে সহযোগিতা ও যৌথ দায়িত্ববোধ গড়ে তোলা।">Building cooperation and shared responsibility in community initiatives.</p></div></article>
+          <article class="about-focus-card"><img src="assets/images/hero-community.jpg" alt="Community gathering" loading="lazy"><div><h3 data-en="Local Initiatives" data-bn="স্থানীয় উদ্যোগ">Local Initiatives</h3><p data-en="Supporting practical initiatives shaped by community priorities." data-bn="সমাজের অগ্রাধিকার অনুযায়ী বাস্তবভিত্তিক উদ্যোগে সহায়তা করা।">Supporting practical initiatives shaped by community priorities.</p></div></article>
+          <article class="about-focus-card"><img src="assets/images/banner.png" alt="Hope and care community work" loading="lazy"><div><h3 data-en="Care & Wellbeing" data-bn="যত্ন ও কল্যাণ">Care & Wellbeing</h3><p data-en="Promoting compassion, dignity and a caring environment for all." data-bn="সবার জন্য সহমর্মিতা, মর্যাদা ও যত্নশীল পরিবেশকে গুরুত্ব দেওয়া।">Promoting compassion, dignity and a caring environment for all.</p></div></article>
+        </div>
+      </div>
+    </section>
+
+    <!-- Meet the confirmed team -->
+    <section class="section about-team-section" id="our-team">
+      <div class="container">
+        <div class="section-header centered">
+          <span class="eyebrow" data-en="THE PEOPLE BEHIND OUR WORK" data-bn="আমাদের কাজের পেছনের মানুষ">THE PEOPLE BEHIND OUR WORK</span>
+          <h2 data-en="Meet Our Team" data-bn="আমাদের টিমের সঙ্গে পরিচিত হোন">Meet Our Team</h2>
+          <p data-en="Meet the people helping guide and coordinate Hope & Care Bangladesh." data-bn="Hope & Care Bangladesh-এর কাজ পরিচালনা ও সমন্বয়ে যুক্ত ব্যক্তিদের সঙ্গে পরিচিত হোন।">Meet the people helping guide and coordinate Hope & Care Bangladesh.</p>
+        </div>
+        <div class="about-team-grid">
+          <article class="about-team-card"><div class="about-team-photo"><img src="assets/images/habiba.jpg" alt="Mst Habiba Aktar" loading="lazy"></div><div class="about-team-info"><h3>Mst Habiba Aktar</h3><p data-en="Executive Director" data-bn="নির্বাহী পরিচালক">Executive Director</p></div></article>
+          <article class="about-team-card"><div class="about-team-photo"><img src="assets/images/sumon.jpg" alt="Mahfuz Hasan Sumon" loading="lazy"></div><div class="about-team-info"><h3>Mahfuz Hasan Sumon</h3><p data-en="General Secretary" data-bn="সাধারণ সম্পাদক">General Secretary</p></div></article>
+          <article class="about-team-card"><div class="about-team-photo"><img src="assets/images/roton.jpg" alt="Jillur Rahman Roton" loading="lazy"></div><div class="about-team-info"><h3>Jillur Rahman Roton</h3><p data-en="Program Coordinator" data-bn="প্রোগ্রাম সমন্বয়ক">Program Coordinator</p></div></article>
+        </div>
+      </div>
+    </section>
+
+        <!-- Mission and vision draft -->
     <section class="section programs-section">
       <div class="container">
 
