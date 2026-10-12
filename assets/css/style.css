@@ -1598,3 +1598,29 @@ button[type=submit] { cursor:pointer; border:0; }
 .hc-focus-grid{grid-template-columns:repeat(3,minmax(0,1fr));}
 @media(max-width:1000px){.hc-focus-grid{grid-template-columns:repeat(2,minmax(0,1fr));}}
 @media(max-width:560px){.hc-focus-grid{grid-template-columns:1fr;}.hc-focus-card{min-height:205px;}}
+
+
+/* Hope & Care: shared header logo + mobile responsiveness patch */
+.brand { display:flex; align-items:center; gap:12px; min-width:0; flex-shrink:0; }
+.brand-logo { display:block; width:48px; height:48px; max-width:48px; flex:0 0 48px; object-fit:contain; border-radius:10px; }
+@media (max-width: 850px) {
+  .header-inner { display:flex; align-items:center; flex-wrap:wrap; }
+  .brand { max-width:calc(100% - 64px); }
+  .brand-text { min-width:0; }
+  .brand-text strong { white-space:nowrap; }
+  .menu-toggle { flex-shrink:0; }
+}
+@media (max-width: 560px) {
+  .brand-logo { width:42px; height:42px; max-width:42px; flex-basis:42px; }
+  .brand { gap:8px; }
+  .brand-text strong { font-size:14px; }
+  .brand-text small { font-size:9px; letter-spacing:.12em; }
+  .hero, .about-story-hero, .hc-home-hero { max-width:100%; }
+  .about-story-hero { padding:64px 0 58px; background-position:58% center; }
+  .about-story-hero h1 { font-size:clamp(2rem,9vw,2.65rem); line-height:1.12; overflow-wrap:anywhere; }
+  .about-story-hero .hero-description { font-size:1rem; line-height:1.65; }
+  .about-hero-cta { min-height:44px; max-width:100%; white-space:normal; }
+  .site-header, .header-inner { max-width:100%; }
+  body { overflow-wrap:break-word; }
+  img { max-width:100%; }
+}
