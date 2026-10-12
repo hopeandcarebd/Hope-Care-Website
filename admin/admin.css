@@ -11,3 +11,8 @@
 
 /* Live website visual editor */
 .live-site-frame{display:block;width:100%;height:min(78vh,900px);min-height:620px;border:0;border-radius:8px;background:#fff}.site-preview-shell{overflow:hidden}.preview-caption{line-height:1.6}.site-editor-panel{border:1px solid var(--line);border-radius:14px;padding:20px;background:#fff}.site-editor-panel .section-head h3{font-size:19px}.site-editor-panel .form-grid input,.site-editor-panel .form-grid textarea{border-radius:9px}.site-editor-panel .form-actions .btn{border-radius:9px}@media(max-width:600px){.live-site-frame{height:72vh;min-height:520px}}
+
+
+/* Small, contained brand mark for the admin workspace. */
+.sidebar .brand-mark { width: 42px; height: 42px; flex: 0 0 42px; overflow: hidden; }
+.sidebar .brand { display: flex; align-items: center; gap: 10px; }
