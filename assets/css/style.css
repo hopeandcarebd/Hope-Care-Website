@@ -1545,3 +1545,35 @@ button[type=submit] { cursor:pointer; border:0; }
  .hc-home-hero-inner{min-height:370px}
  .hc-home-hero h1{font-size:clamp(2.7rem,11vw,3.7rem)}
 }
+
+
+/* FIX v3: use a clean photographic hero, never reuse the graphic banner as a watermark */
+.hc-home-hero-bg{
+  background-image:linear-gradient(90deg,rgba(18,26,38,.90) 0%,rgba(18,26,38,.70) 48%,rgba(18,26,38,.18) 100%),url('../images/hero-community.jpg') !important;
+  background-position:center 46%;
+  background-size:cover;
+  background-repeat:no-repeat;
+}
+.intro-section:before,
+.hc-focus-section:before,
+.programs-section:before,
+.projects-section:before,
+.impact-section:before,
+.news-section:before,
+.cta-section:before{
+  content:none !important;
+  display:none !important;
+}
+.intro-section,.hc-focus-section,.projects-section,.impact-section{
+  background-image:none !important;
+}
+.hc-focus-grid{grid-template-columns:repeat(4,minmax(0,1fr));}
+.hc-focus-card{min-height:250px;}
+@media(max-width:1000px){
+  .hc-focus-grid{grid-template-columns:repeat(2,minmax(0,1fr));}
+}
+@media(max-width:560px){
+  .hc-focus-grid{grid-template-columns:1fr;}
+  .hc-focus-card{min-height:190px;}
+  .hc-home-hero-bg{background-position:62% center;}
+}
