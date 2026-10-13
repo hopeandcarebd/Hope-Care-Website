@@ -1,389 +1,57 @@
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-
-  <title>Hope & Care Bangladesh | Together for a Better Tomorrow</title>
-
-  <meta name="description"
-        content="Hope & Care Bangladesh — building hope, supporting communities, and working towards a better tomorrow.">
-
-  <meta name="theme-color" content="#17202d">
-
+  <title>Hope &amp; Care Bangladesh</title>
   <link rel="stylesheet" href="assets/css/style.css">
-
-  <script src="assets/js/language.js" defer></script>
-  <script src="assets/js/main.js" defer></script>
+  <script defer src="assets/js/language.js"></script>
+  <script defer src="assets/js/main.js"></script>
 </head>
-
 <body>
-
-  <!-- Accessibility: skip navigation -->
-  <a class="skip-link" href="#main-content"
-     data-en="Skip to content"
-     data-bn="মূল কনটেন্টে যান">Skip to content</a>
-
-  <!-- Header -->
   <header class="site-header">
-    <div class="container header-inner">
-
-      <a class="brand" href="index.html" aria-label="Hope & Care Bangladesh Home">
-        <!-- Replace this placeholder with the official organization logo -->
-        <img class="brand-logo" src="assets/images/logo.png" alt="Hope &amp; Care Bangladesh logo">
-        <span class="brand-text">
-          <strong>Hope & Care</strong>
-          <small>Bangladesh</small>
-        </span>
-      </a>
-
-      <button
-        class="menu-toggle"
-        id="menu-toggle"
-        type="button"
-        aria-label="Open navigation"
-        aria-controls="primary-navigation"
-        aria-expanded="false">
-        <span></span>
-        <span></span>
-        <span></span>
-      </button>
-
-      <nav class="main-navigation" id="primary-navigation"
-           aria-label="Main navigation">
-
-        <a href="index.html" class="active"
-           data-en="Home" data-bn="হোম">Home</a>
-
-        <a href="about.html"
-           data-en="About Us" data-bn="আমাদের সম্পর্কে">About Us</a>
-
-        <a href="programs.html"
-           data-en="Our Programs" data-bn="আমাদের কার্যক্রম">Our Programs</a>
-
-        <a href="projects.html"
-           data-en="Projects" data-bn="প্রকল্প">Projects</a>
-
-        <a href="impact.html"
-           data-en="Our Impact" data-bn="আমাদের অবদান">Our Impact</a>
-
-        <a href="gallery.html"
-           data-en="Gallery" data-bn="গ্যালারি">Gallery</a>
-
-        <a href="news.html"
-           data-en="News & Events" data-bn="সংবাদ ও ইভেন্ট">News & Events</a>
-
-        <a href="contact.html"
-           data-en="Contact" data-bn="যোগাযোগ">Contact</a>
+    <div class="container header-container">
+      <a class="logo" href="index.html" aria-label="Hope & Care Bangladesh home">Hope &amp; Care Bangladesh</a>
+      <button class="menu-toggle" type="button" aria-label="Open menu" onclick="document.querySelector('.main-nav')?.classList.toggle('open')">☰</button>
+      <nav class="main-nav" aria-label="Main navigation">
+        <a href="index.html" data-en="Home" data-bn="হোম">Home</a>
+        <a href="about.html" data-en="About Us" data-bn="আমাদের সম্পর্কে">About Us</a>
+        <a href="projects.html" data-en="Projects" data-bn="প্রকল্পসমূহ">Projects</a>
+        <a href="contact.html" data-en="Contact" data-bn="যোগাযোগ">Contact</a>
       </nav>
-
-      <div class="header-actions">
-        <button id="language-toggle" class="language-toggle"
-                type="button" aria-label="Switch language">
-          বাংলা
-        </button>
-
-        <a href="volunteer.html" class="button button-small"
-           data-en="Get Involved" data-bn="যুক্ত হোন">
-          Get Involved
-        </a>
-      </div>
-
     </div>
   </header>
 
-
-  <main id="main-content">
-
-    <!-- Homepage hero: JAAGO-inspired visual direction, original Hope & Care content -->
-    <section class="hc-home-hero">
-      <div class="hc-home-hero-bg" aria-hidden="true"></div>
-      <div class="container hc-home-hero-inner">
-        <div class="hc-home-hero-copy">
-          <span class="hc-kicker" data-en="HOPE • CARE • COMMUNITY" data-bn="আশা • যত্ন • সমাজ">HOPE • CARE • COMMUNITY</span>
-          <h1 data-en="Caring Today, Changing Tomorrow" data-bn="আজ যত্ন, আগামীতে পরিবর্তন">Caring Today, Changing Tomorrow</h1>
-          <div class="hc-home-actions">
-            <a href="volunteer.html" class="hc-btn hc-btn-yellow" data-en="Get Involved →" data-bn="যুক্ত হোন →">Get Involved →</a>
-            <a href="about.html" class="hc-btn hc-btn-ghost" data-en="Discover Our Work →" data-bn="আমাদের কাজ জানুন →">Discover Our Work →</a>
-          </div>
-          <div class="hc-hero-trust"><span class="hc-heart">♥</span><span data-en="Local roots. Community-first approach." data-bn="স্থানীয় শেকড়। মানুষের পাশে থাকার অঙ্গীকার।">Local roots. Community-first approach.</span></div>
-        </div>
-      </div>
-    </section>
-
-    <section class="hc-value-strip" aria-label="Our approach">
-      <div class="container hc-value-grid">
-        <div class="hc-value"><span class="hc-value-icon">♡</span><strong data-en="People first" data-bn="মানুষই প্রথম">People first</strong><small data-en="Community-led care" data-bn="কমিউনিটিকে সঙ্গে নিয়ে">Community-led care</small></div>
-        <div class="hc-value"><span class="hc-value-icon">✳</span><strong data-en="Opportunity" data-bn="সুযোগ">Opportunity</strong><small data-en="Learning and awareness" data-bn="শিক্ষা ও সচেতনতা">Learning and awareness</small></div>
-        <div class="hc-value"><span class="hc-value-icon">⌖</span><strong data-en="Local focus" data-bn="স্থানীয় অগ্রাধিকার">Local focus</strong><small data-en="Rooted in Panchagarh" data-bn="পঞ্চগড়ে আমাদের শেকড়">Rooted in Panchagarh</small></div>
-        <div class="hc-value"><span class="hc-value-icon">♡</span><strong data-en="Shared action" data-bn="সম্মিলিত উদ্যোগ">Shared action</strong><small data-en="Volunteers and partners" data-bn="স্বেচ্ছাসেবক ও সহযোগীরা">Volunteers and partners</small></div>
-      </div>
-    </section>
-
-    <!-- Introduction -->
-    <section class="section intro-section">
-      <div class="container intro-grid">
-
-        <div class="section-heading">
-          <span class="eyebrow"
-                data-en="WELCOME TO HOPE & CARE"
-                data-bn="HOPE & CARE-এ স্বাগতম">
-            WELCOME TO HOPE & CARE
-          </span>
-
-          <h2 data-en="A commitment to hope, care and positive change"
-              data-bn="আশা, যত্ন ও ইতিবাচক পরিবর্তনের অঙ্গীকার">
-            A commitment to hope, care and positive change
-          </h2>
-        </div>
-
-        <div class="intro-copy">
-          <p data-en="Hope & Care Bangladesh is a community-focused organization based in Shalbahan, Tetulia, Panchagarh, Bangladesh."
-             data-bn="Hope & Care Bangladesh বাংলাদেশের পঞ্চগড় জেলার তেঁতুলিয়ার শালবাহানভিত্তিক একটি কমিউনিটি-কেন্দ্রিক সংস্থা।">
-            Hope & Care Bangladesh is a community-focused organization
-            based in Shalbahan, Tetulia, Panchagarh, Bangladesh.
-          </p>
-
-          <p data-en="We want this website to share our mission, programs, projects, activities and organizational information transparently. Our detailed organizational profile will be published after review and approval."
-             data-bn="এই ওয়েবসাইটের মাধ্যমে আমরা আমাদের লক্ষ্য, কার্যক্রম, প্রকল্প, উদ্যোগ ও সাংগঠনিক তথ্য স্বচ্ছভাবে তুলে ধরতে চাই। বিস্তারিত সাংগঠনিক পরিচিতি পর্যালোচনা ও অনুমোদনের পর প্রকাশ করা হবে।">
-            We want this website to share our mission, programs, projects,
-            activities and organizational information transparently.
-            Our detailed organizational profile will be published after
-            review and approval.
-          </p>
-
-          <a href="about.html" class="text-link"
-             data-en="Learn more about us →"
-             data-bn="আমাদের সম্পর্কে আরও জানুন →">
-            Learn more about us →
-          </a>
-        </div>
-
-      </div>
-    </section>
-
-
-    <section class="hc-focus-section">
+  <main>
+    <section class="hero section">
       <div class="container">
-        <div class="hc-section-head"><div><span class="hc-section-kicker" data-en="WHERE WE FOCUS" data-bn="আমাদের অগ্রাধিকার">WHERE WE FOCUS</span><h2 data-en="Small steps. Meaningful change." data-bn="ছোট পদক্ষেপ, অর্থবহ পরিবর্তন।">Small steps. Meaningful change.</h2></div><p data-en="Explore the areas where Hope & Care Bangladesh aims to connect people, ideas and community action." data-bn="যে ক্ষেত্রগুলোতে মানুষ, ধারণা ও সামাজিক উদ্যোগকে একসঙ্গে যুক্ত করতে চাই—সেগুলো জানুন।">Explore the areas where Hope & Care Bangladesh aims to connect people, ideas and community action.</p></div>
-        <div class="hc-focus-grid">
-          <a class="hc-focus-card hc-focus-green" href="programs.html" style="--card-photo:url('assets/images/Education%20%26%20Awareness.jpg')"><img class="hc-focus-photo" src="assets/images/Education%20%26%20Awareness.jpg" alt="Education and awareness activities" loading="lazy" onerror="this.onerror=null;this.src='assets/images/hero-community.jpg'"><span class="hc-focus-symbol">✳</span><span class="hc-focus-label" data-en="01 / LEARN" data-bn="০১ / শিক্ষা">01 / LEARN</span><h3 data-en="Education & Awareness" data-bn="শিক্ষা ও সচেতনতা">Education & Awareness</h3><span class="hc-card-arrow">↗</span></a>
-          <a class="hc-focus-card hc-focus-yellow" href="projects.html" style="--card-photo:url('assets/images/Community%20Support.jpg')"><img class="hc-focus-photo" src="assets/images/Community%20Support.jpg" alt="Community support activities" loading="lazy" onerror="this.onerror=null;this.src='assets/images/hero-community.jpg'"><span class="hc-focus-symbol">♡</span><span class="hc-focus-label" data-en="02 / SUPPORT" data-bn="০২ / সহায়তা">02 / SUPPORT</span><h3 data-en="Community Support" data-bn="কমিউনিটি সহায়তা">Community Support</h3><span class="hc-card-arrow">↗</span></a>
-
-          <a class="hc-focus-card hc-focus-green" href="volunteer.html" style="--card-photo:url('assets/images/Volunteer%20Engagement.jpg')"><img class="hc-focus-photo" src="assets/images/Volunteer%20Engagement.jpg" alt="Volunteer engagement" loading="lazy" onerror="this.onerror=null;this.src='assets/images/hero-community.jpg'"><span class="hc-focus-symbol">♡</span><span class="hc-focus-label" data-en="04 / ENGAGE" data-bn="০৪ / যুক্ত হোন">04 / ENGAGE</span><h3 data-en="Volunteer Engagement" data-bn="স্বেচ্ছাসেবায় যুক্ত হোন">Volunteer Engagement</h3><span class="hc-card-arrow">↗</span></a>
-        </div>
+        <h1 data-en="Hope &amp; Care Bangladesh" data-bn="হোপ অ্যান্ড কেয়ার বাংলাদেশ">Hope &amp; Care Bangladesh</h1>
+        <p data-en="Working together for a healthier, more caring community." data-bn="আরও সুস্থ ও মানবিক সমাজ গড়তে আমরা একসঙ্গে কাজ করি।">Working together for a healthier, more caring community.</p>
+        <a class="btn" href="projects.html" data-en="Explore Our Projects" data-bn="আমাদের প্রকল্প দেখুন">Explore Our Projects</a>
       </div>
     </section>
 
-    <!-- Programs overview is represented by the focus cards above to avoid duplicate cards. -->
-
-    <!-- Projects -->
-    <section class="section projects-section">
-      <div class="container project-feature">
-
-        <div class="project-feature-content">
-          <span class="eyebrow"
-                data-en="OUR WORK"
-                data-bn="আমাদের কাজ">
-            OUR WORK
-          </span>
-
-          <h2 data-en="Every meaningful change starts with an idea"
-              data-bn="অর্থবহ পরিবর্তনের শুরু হয় একটি উদ্যোগ থেকে">
-            Every meaningful change starts with an idea
-          </h2>
-
-          <p data-en="This section will feature verified project descriptions, photographs, locations, timelines and updates supplied or approved by Hope & Care Bangladesh."
-             data-bn="এই অংশে Hope & Care Bangladesh-এর সরবরাহ করা বা অনুমোদিত প্রকল্পের বিবরণ, ছবি, স্থান, সময়সীমা ও অগ্রগতির তথ্য প্রকাশ করা হবে।">
-            This section will feature verified project descriptions,
-            photographs, locations, timelines and updates supplied or
-            approved by Hope & Care Bangladesh.
-          </p>
-
-          <a href="projects.html" class="button button-primary"
-             data-en="View Our Projects"
-             data-bn="আমাদের প্রকল্প দেখুন">
-            View Our Projects
-          </a>
-        </div>
-
-        <div class="project-feature-art" aria-hidden="true">
-          <div class="art-circle art-circle-large"></div>
-          <div class="art-circle art-circle-small"></div>
-          <div class="art-symbol">H+C</div>
-          <div class="art-leaf">✳</div>
-        </div>
-
+    <section class="section featured-project" id="featured-project">
+      <div class="container">
+        <h2 data-en="Featured Upcoming Project" data-bn="বিশেষ আসন্ন প্রকল্প">Featured Upcoming Project</h2>
+        <article class="project-card upcoming-project-card">
+          <img src="https://drive.google.com/uc?export=view&amp;id=1od6KbUoXUUUeueqPAB6rHHE52_HTQ5v-" alt="Clean drinking water tube well project" loading="lazy">
+          <div class="project-content">
+            <p class="project-status" data-en="Upcoming · Sponsorship Needed" data-bn="আসন্ন · স্পনসর প্রয়োজন">Upcoming · Sponsorship Needed</p>
+            <h3 data-en="Safe Drinking Water for a Village" data-bn="একটি গ্রামের জন্য নিরাপদ পানীয় জল">Safe Drinking Water for a Village</h3>
+            <p data-en="We are planning to install one clean drinking-water tube well in a village in Bangladesh. The project will begin once sponsorship and the village location are confirmed." data-bn="বাংলাদেশের একটি গ্রামে একটি নিরাপদ পানীয় জলের নলকূপ স্থাপনের পরিকল্পনা রয়েছে। স্পনসর এবং গ্রামের অবস্থান নিশ্চিত হলে প্রকল্পটি শুরু হবে।">We are planning to install one clean drinking-water tube well in a village in Bangladesh. The project will begin once sponsorship and the village location are confirmed.</p>
+            <p><strong data-en="Location:" data-bn="অবস্থান:">Location:</strong> <span data-en="Village to be confirmed" data-bn="গ্রাম নির্ধারণ করা হবে">Village to be confirmed</span></p>
+            <a class="btn" href="projects.html#safe-drinking-water" data-en="View Project Details" data-bn="প্রকল্পের বিস্তারিত দেখুন">View Project Details</a>
+          </div>
+        </article>
       </div>
     </section>
-
-
-    <!-- Impact and transparency -->
-    <section class="section impact-section">
-      <div class="container impact-grid">
-
-        <div>
-          <span class="eyebrow"
-                data-en="ACCOUNTABILITY MATTERS"
-                data-bn="জবাবদিহি গুরুত্বপূর্ণ">
-            ACCOUNTABILITY MATTERS
-          </span>
-
-          <h2 data-en="Transparent information builds trust"
-              data-bn="স্বচ্ছ তথ্য গড়ে তোলে আস্থা">
-            Transparent information builds trust
-          </h2>
-
-          <p data-en="We aim to make approved organizational updates, project progress and relevant reports accessible to visitors."
-             data-bn="অনুমোদিত সাংগঠনিক তথ্য, প্রকল্পের অগ্রগতি ও প্রাসঙ্গিক প্রতিবেদন দর্শনার্থীদের কাছে সহজলভ্য করাই আমাদের লক্ষ্য।">
-            We aim to make approved organizational updates,
-            project progress and relevant reports accessible to visitors.
-          </p>
-
-          <a href="reports.html" class="text-link"
-             data-en="Reports & Transparency →"
-             data-bn="প্রতিবেদন ও স্বচ্ছতা →">
-            Reports & Transparency →
-          </a>
-        </div>
-
-        <div class="impact-panel">
-          <div class="impact-panel-icon" aria-hidden="true">✓</div>
-          <h3 data-en="Verified information"
-              data-bn="যাচাইকৃত তথ্য">
-            Verified information
-          </h3>
-          <p data-en="Organizational figures and reports will be published only when verified and approved."
-             data-bn="যাচাই ও অনুমোদনের পরই সাংগঠনিক পরিসংখ্যান ও প্রতিবেদন প্রকাশ করা হবে।">
-            Organizational figures and reports will be published only
-            when verified and approved.
-          </p>
-        </div>
-
-      </div>
-    </section>
-
-
-    <!-- Volunteer call to action -->
-    <section class="cta-section">
-      <div class="container cta-content">
-
-        <span class="eyebrow eyebrow-light"
-              data-en="BE PART OF THE JOURNEY"
-              data-bn="এই যাত্রার অংশ হোন">
-          BE PART OF THE JOURNEY
-        </span>
-
-        <h2 data-en="Your time and care can make a difference"
-            data-bn="আপনার সময় ও যত্ন ইতিবাচক পরিবর্তন আনতে পারে">
-          Your time and care can make a difference
-        </h2>
-
-        <p data-en="Connect with Hope & Care Bangladesh to learn more about opportunities to get involved."
-           data-bn="যুক্ত হওয়ার সুযোগ সম্পর্কে জানতে Hope & Care Bangladesh-এর সঙ্গে যোগাযোগ করুন।">
-          Connect with Hope & Care Bangladesh to learn more about
-          opportunities to get involved.
-        </p>
-
-        <div class="cta-actions">
-          <a href="volunteer.html" class="button button-white"
-             data-en="Volunteer With Us"
-             data-bn="আমাদের সঙ্গে স্বেচ্ছাসেবক হোন">
-            Volunteer With Us
-          </a>
-
-          <a href="contact.html" class="button button-light-outline"
-             data-en="Contact Our Team"
-             data-bn="আমাদের সঙ্গে যোগাযোগ করুন">
-            Contact Our Team
-          </a>
-        </div>
-
-      </div>
-    </section>
-
   </main>
 
-
-  <!-- Footer -->
   <footer class="site-footer">
-    <div class="container footer-grid">
-
-      <div class="footer-about">
-        <a class="brand footer-brand" href="index.html">
-          <img class="brand-logo" src="assets/images/logo.png" alt="Hope &amp; Care Bangladesh logo">
-          <span class="brand-text">
-            <strong>Hope & Care</strong>
-            <small>Bangladesh</small>
-          </span>
-        </a>
-
-        <p data-en="Together for a more caring and hopeful tomorrow."
-           data-bn="আরও মানবিক ও আশাব্যঞ্জক আগামীর জন্য একসাথে।">
-          Together for a more caring and hopeful tomorrow.
-        </p>
-
-        <a href="https://www.facebook.com/hopeandcarebd"
-           target="_blank" rel="noopener noreferrer">
-          Facebook ↗
-        </a>
-      </div>
-
-      <div class="footer-links">
-        <h3 data-en="Quick Links" data-bn="দরকারি লিংক">Quick Links</h3>
-        <a href="about.html" data-en="About Us" data-bn="আমাদের সম্পর্কে">About Us</a>
-        <a href="programs.html" data-en="Our Programs" data-bn="আমাদের কার্যক্রম">Our Programs</a>
-        <a href="projects.html" data-en="Projects" data-bn="প্রকল্প">Projects</a>
-        <a href="gallery.html" data-en="Gallery" data-bn="গ্যালারি">Gallery</a>
-        <a href="reports.html" data-en="Reports" data-bn="প্রতিবেদন">Reports</a>
-      </div>
-
-      <div class="footer-contact">
-        <h3 data-en="Contact Us" data-bn="যোগাযোগ করুন">Contact Us</h3>
-
-        <p>
-          <strong data-en="Address:" data-bn="ঠিকানা:">Address:</strong>
-          <span data-en="Shalbahan, Tetulia, Panchagarh, Bangladesh"
-                data-bn="শালবাহান, তেঁতুলিয়া, পঞ্চগড়, বাংলাদেশ">
-            Shalbahan, Tetulia, Panchagarh, Bangladesh
-          </span>
-        </p>
-
-        <p>
-          <strong data-en="Phone:" data-bn="ফোন:">Phone:</strong>
-          <a href="tel:+8801821988040">+880 1821-988040</a>
-        </p>
-
-        <p>
-          <strong data-en="Email:" data-bn="ইমেইল:">Email:</strong>
-          <a href="mailto:hopeandcarebd@gmail.com">
-            hopeandcarebd@gmail.com
-          </a>
-        </p>
-      </div>
-
-    </div>
-
-    <div class="footer-bottom">
-      <div class="container footer-bottom-inner">
-        <p>
-          © <span id="current-year">2026</span>
-          Hope & Care Bangladesh.
-          <span data-en="All rights reserved."
-                data-bn="সর্বস্বত্ব সংরক্ষিত।">
-            All rights reserved.
-          </span>
-        </p>
-
-        <a href="contact.html"
-           data-en="Contact & Feedback"
-           data-bn="যোগাযোগ ও মতামত">
-          Contact & Feedback
-        </a>
-      </div>
+    <div class="container">
+      <p data-en="© Hope &amp; Care Bangladesh. All rights reserved." data-bn="© হোপ অ্যান্ড কেয়ার বাংলাদেশ। সর্বস্বত্ব সংরক্ষিত।">© Hope &amp; Care Bangladesh. All rights reserved.</p>
     </div>
   </footer>
-
 </body>
 </html>
