@@ -19,7 +19,7 @@ button{font:inherit;cursor:pointer}.primary{background:var(--green,#21764f);colo
 <body>
 <section id="loginPanel" class="login-wrap">
   <div class="login-card">
-    <img src="../assets/images/logo.png" alt="Hope &amp; Care Bangladesh logo">
+    <img src="hope-care-logo.png" alt="Hope &amp; Care Bangladesh logo">
     <h1>Administrator Panel</h1>
     <p class="sub">Manage Hope &amp; Care Bangladesh</p>
     <form id="loginForm">
@@ -32,11 +32,12 @@ button{font:inherit;cursor:pointer}.primary{background:var(--green,#21764f);colo
 </section>
 <div id="dashboard" class="admin-shell hidden">
   <aside class="sidebar">
-    <a class="brand" href="./"><img src="../assets/images/logo.png" alt=""><span>Hope &amp; Care<small style="display:block;font-size:11px;font-weight:500;color:var(--muted)">Bangladesh Admin</small></span></a>
+    <a class="brand" href="./"><img src="hope-care-logo.png" alt=""><span>Hope &amp; Care<small style="display:block;font-size:11px;font-weight:500;color:var(--muted)">Bangladesh Admin</small></span></a>
     <div class="nav-label">WORKSPACE</div>
     <div class="nav-list">
       <button class="nav-btn active" data-view="contentView">Website content</button>
       <button class="nav-btn" data-view="projectsView">Projects</button>
+      <button class="nav-btn" data-view="teamView">Team Members</button>
       <button class="nav-btn" data-view="pagesView">All page content</button>
     </div>
     <div class="sidebar-bottom">Private administrator workspace<br><span id="sessionStatus">Session active</span></div>
@@ -61,24 +62,32 @@ button{font:inherit;cursor:pointer}.primary{background:var(--green,#21764f);colo
         <div id="contentStatus" class="status hidden" role="status"></div>
       </div>
     </section>
+
+    <section id="teamView" class="view hidden">
+      <div class="panel"><h2 id="teamFormTitle">Add team member</h2><form id="teamForm"><input id="teamId" type="hidden">
+        <div class="field-grid"><div class="field"><label for="teamName">Full name *</label><input id="teamName" maxlength="140" required></div><div class="field"><label for="teamRole">Position / role *</label><input id="teamRole" maxlength="140" required></div></div>
+        <div class="field"><label for="teamBio">Short bio (optional)</label><textarea id="teamBio" maxlength="2000"></textarea></div>
+        <div class="field"><label for="teamPhotoFile">Upload photo (PNG, JPEG, WebP or GIF; max 4 MB)</label><input id="teamPhotoFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><div id="teamPhotoUploadStatus" class="status hidden" role="status"></div></div>
+        <div class="field"><label for="teamPhotoUrl">Photo URL</label><input id="teamPhotoUrl" type="url" placeholder="https://..."><img id="teamPhotoPreview" class="hidden" alt="Team member preview" style="max-width:220px;max-height:180px;object-fit:contain;margin-top:10px"></div>
+        <div class="field-grid"><div class="field"><label for="teamStatus">Publication status</label><select id="teamStatus"><option value="draft">Draft (not public)</option><option value="published">Published (show on About Us)</option></select></div><div class="field"><label for="teamSortOrder">Display order</label><input id="teamSortOrder" type="number" min="0" max="9999" value="0"></div></div>
+        <div class="actions"><button class="primary" type="submit">Save team member</button><button class="secondary" id="clearTeam" type="button">Clear</button></div>
+      </form><div id="teamStatusMessage" class="status hidden" role="status"></div></div>
+      <div class="panel"><div class="topbar"><h2 style="margin:0">Team members</h2><button class="secondary" id="reloadTeam" type="button">Refresh</button></div><div id="teamList"><p class="muted">Loading team members…</p></div></div>
+    </section>
     <section id="projectsView" class="view hidden">
       <div class="panel"><h2 id="projectFormTitle">Add project</h2><form id="projectForm"><input id="projectId" type="hidden">
         <div class="field-grid"><div class="field"><label for="projectTitle">Title *</label><input id="projectTitle" required maxlength="140"></div><div class="field"><label for="projectCategory">Category</label><input id="projectCategory" maxlength="80"></div></div>
         <div class="field-grid"><div class="field"><label for="projectLocation">Location</label><input id="projectLocation" maxlength="120"></div><div class="field"><label for="projectStatus">Status</label><select id="projectStatus"><option value="draft">Draft</option><option value="published">Published</option><option value="completed">Completed</option></select></div></div>
-        <div class="field"><label for="projectDescription">Description *</label><textarea id="projectDescription" required maxlength="1200"></textarea></div>
-        <div class="field-grid"><div class="field"><label for="projectImageFile">Upload project photo to GitHub</label><input id="projectImageFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><small class="muted">Choose an image up to 4 MB. GitHub upload requires a token stored in Apps Script Script Properties.</small><div id="projectImageUploadStatus" class="status hidden" role="status"></div></div><div class="field"><label for="projectImage">Image URL (optional)</label><input id="projectImage" type="url" placeholder="Uploaded GitHub image URL or https://..."><img id="projectImagePreview" alt="Project photo preview" class="hidden" style="display:block;max-width:220px;max-height:130px;object-fit:cover;border-radius:10px;margin-top:8px"></div></div>
-        <label class="check" style="display:flex;align-items:center;gap:9px;margin:12px 0"><input id="projectFeatured" type="checkbox"> Feature this project on the Home page</label>
+        <div class="field"><label for="projectDescription">Description *</label><textarea id="projectDescription" required maxlength="50000"></textarea><small class="muted">Up to 1,000 words.</small></div>
+        <div class="field"><label for="projectImageFile">Upload project image (optional)</label><input id="projectImageFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><div id="projectImageUploadStatus" class="status hidden" role="status"></div><img id="projectImagePreview" class="hidden" alt="Project image preview" style="max-width:220px;max-height:140px;object-fit:contain;margin-top:10px"></div>
+        <label style="display:flex;gap:8px;align-items:center"><input id="projectFeatured" type="checkbox" style="width:auto"> Feature this project</label>
+        <div class="field"><label for="projectImage">Image URL (optional)</label><input id="projectImage" type="url" placeholder="https://..."></div>
         <div class="actions"><button class="primary" type="submit">Save project</button><button class="secondary" id="clearProject" type="button">Clear</button></div>
       </form><div id="projectStatusMessage" class="status hidden" role="status"></div></div>
       <div class="panel"><div class="topbar"><h2 style="margin:0">Saved projects</h2><button class="secondary" id="reloadProjects" type="button">Refresh</button></div><div id="projectsList"><p class="muted">Loading projects…</p></div></div>
     </section>
 
-    <section id="pagesView" class="view hidden">
-      <div class="panel"><h2>Edit website pages</h2><p class="muted">Choose a page to load its main headings, paragraphs, list items and buttons. Saved values are stored in the Website content Google Sheet and displayed on the public page.</p>
-        <div class="field-grid"><div class="field"><label for="cmsPageSelect">Website page</label><select id="cmsPageSelect"><option value="index.html">Home</option><option value="about.html">About Us</option><option value="programs.html">Our Programs</option><option value="projects.html">Projects</option><option value="impact.html">Our Impact</option><option value="gallery.html">Gallery</option><option value="news.html">News &amp; Events</option><option value="contact.html">Contact</option><option value="donate.html">Donate</option><option value="reports.html">Reports</option><option value="team.html">Team</option><option value="volunteer.html">Volunteer</option><option value="privacy.html">Privacy</option></select></div><div class="field" style="display:flex;align-items:end"><button class="secondary" id="loadCmsPage" type="button">Load page fields</button></div></div>
-        <form id="pageContentForm"><div id="pageContentFields"><p class="muted">Select a page and click “Load page fields”.</p></div><div class="actions"><button class="primary" type="submit">Save page content</button></div></form><div id="pageContentStatus" class="status hidden" role="status"></div>
-      </div>
-    </section>
+    <section id="pagesView" class="view hidden"><div class="panel"><h2>All page content</h2><p class="muted">Load editable text from a page and save changes to Website Content.</p><form id="pageContentForm"><div class="field-grid"><div class="field"><label for="cmsPageSelect">Page</label><select id="cmsPageSelect"><option>index.html</option><option>about.html</option><option>programs.html</option><option>projects.html</option><option>impact.html</option><option>gallery.html</option><option>news.html</option><option>contact.html</option><option>donate.html</option><option>reports.html</option><option>team.html</option><option>volunteer.html</option><option>privacy.html</option></select></div><div class="field" style="align-self:end"><button id="loadCmsPage" class="secondary" type="button">Load page fields</button></div></div><div id="pageContentFields" class="field-grid"></div><div class="actions"><button class="primary" type="submit">Save page content</button></div></form><div id="pageContentStatus" class="status hidden" role="status"></div></div></section>
   </main>
 </div>
 <script src="../assets/js/config.js"></script><script src="admin.js"></script>

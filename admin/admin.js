@@ -12,6 +12,7 @@
   ];
   let token = sessionStorage.getItem("hc-admin-token") || "";
   let projects = [];
+  let teamMembers = [];
 
   function showStatus(id, message, success) {
     const el = $(id);
@@ -60,11 +61,12 @@
     $("dashboard").classList.remove("hidden");
     loadContent();
     loadProjects();
+    if ($("teamList")) loadTeam();
   }
   function switchView(viewId) {
     document.querySelectorAll(".view").forEach(v => v.classList.toggle("hidden", v.id !== viewId));
     document.querySelectorAll("[data-view]").forEach(b => b.classList.toggle("active", b.dataset.view === viewId));
-    $("pageTitle").textContent = viewId === "projectsView" ? "Projects" : (viewId === "pagesView" ? "All page content" : "Website content");
+    $("pageTitle").textContent = viewId === "projectsView" ? "Projects" : (viewId === "pagesView" ? "All page content" : (viewId === "teamView" ? "Team Members" : "Website content"));
   }
 
   $("loginForm").addEventListener("submit", async function (event) {
@@ -274,6 +276,34 @@
   }
   $("reloadProjects").addEventListener("click", loadProjects);
 
+
+
+  function clearTeam(){
+    $("teamForm").reset(); $("teamId").value=""; $("teamStatus").value="draft"; $("teamSortOrder").value="0";
+    $("teamPhotoFile").value=""; $("teamPhotoUrl").value=""; $("teamPhotoPreview").classList.add("hidden");
+    $("teamFormTitle").textContent="Add team member"; hideStatus("teamStatusMessage");
+  }
+  $("clearTeam").addEventListener("click",clearTeam);
+  $("teamPhotoUrl").addEventListener("input",()=>{const u=$("teamPhotoUrl").value.trim(),im=$("teamPhotoPreview");if(u&&/^https:\/\//i.test(u)){im.src=u;im.classList.remove("hidden");}else{im.removeAttribute("src");im.classList.add("hidden");}});
+  $("teamPhotoFile").addEventListener("change",async function(){
+    const file=this.files&&this.files[0];if(!file)return;const status="teamPhotoUploadStatus";hideStatus(status);
+    if(!/^image\/(png|jpeg|webp|gif)$/i.test(file.type)){showStatus(status,"Choose a PNG, JPEG, WebP or GIF image.",false);this.value="";return;}
+    if(file.size>4*1024*1024){showStatus(status,"Photo must be 4 MB or smaller.",false);this.value="";return;}
+    showStatus(status,"Uploading photo to GitHub…",true);
+    try{const dataUrl=await new Promise((resolve,reject)=>{const r=new FileReader();r.onload=()=>resolve(String(r.result||""));r.onerror=()=>reject(new Error("Could not read photo."));r.readAsDataURL(file);});
+      const result=await api("uploadProjectImage",{fileName:file.name,mimeType:file.type,base64:dataUrl.split(",")[1],folder:"team"});
+      if(!result.url)throw new Error("Upload response did not include a photo URL.");$("teamPhotoUrl").value=result.url;$("teamPhotoPreview").src=result.url;$("teamPhotoPreview").classList.remove("hidden");showStatus(status,"Photo uploaded to GitHub.",true);
+    }catch(err){showStatus(status,"Photo upload failed: "+err.message,false);}
+  });
+  $("teamForm").addEventListener("submit",async function(e){e.preventDefault();hideStatus("teamStatusMessage");const id=$("teamId").value.trim();const payload={id,name:$("teamName").value.trim(),role:$("teamRole").value.trim(),bio:$("teamBio").value.trim(),photoUrl:$("teamPhotoUrl").value.trim(),status:$("teamStatus").value,sortOrder:Number($("teamSortOrder").value)||0};
+    try{await api(id?"updateTeamMember":"createTeamMember",payload);showStatus("teamStatusMessage",id?"Team member updated.":"Team member saved.",true);clearTeam();await loadTeam();}
+    catch(err){showStatus("teamStatusMessage","Could not save team member: "+err.message,false);if(/session expired|session missing|unauthorized/i.test(err.message))expireSession(err.message);}
+  });
+  async function loadTeam(){const root=$("teamList");if(!root)return;root.textContent="Loading team members…";try{const result=await api("adminTeamMembers");teamMembers=Array.isArray(result.team)?result.team:[];renderTeam();}catch(err){root.textContent="Could not load team members: "+err.message;if(/session expired|session missing|unauthorized/i.test(err.message))expireSession(err.message);}}
+  function renderTeam(){const root=$("teamList");root.replaceChildren();if(!teamMembers.length){const p=document.createElement("p");p.className="muted";p.textContent="No team members yet. Add the first member above.";root.appendChild(p);return;}
+    teamMembers.forEach(m=>{const row=document.createElement("div");row.className="project-row";const info=document.createElement("div");const title=document.createElement("strong");title.textContent=m.name;const badge=document.createElement("span");badge.className="badge";badge.textContent=m.status;const desc=document.createElement("p");desc.textContent=[m.role,m.bio].filter(Boolean).join(" · ");info.append(title,document.createTextNode(" "),badge,desc);if(m.photoUrl){const img=document.createElement("img");img.src=m.photoUrl;img.alt=m.name;img.style.cssText="width:72px;height:72px;object-fit:contain;border-radius:8px;margin-top:8px;background:#f4f6f3";info.appendChild(img);}const actions=document.createElement("div");actions.className="actions";actions.style.marginTop="0";const edit=document.createElement("button");edit.className="secondary";edit.type="button";edit.textContent="Edit";edit.addEventListener("click",()=>{$("teamId").value=m.id;$("teamName").value=m.name||"";$("teamRole").value=m.role||"";$("teamBio").value=m.bio||"";$("teamPhotoUrl").value=m.photoUrl||"";$("teamStatus").value=m.status||"draft";$("teamSortOrder").value=String(m.sortOrder||0);if(m.photoUrl){$("teamPhotoPreview").src=m.photoUrl;$("teamPhotoPreview").classList.remove("hidden");}else $("teamPhotoPreview").classList.add("hidden");$("teamFormTitle").textContent="Edit team member";switchView("teamView");$("teamForm").scrollIntoView({behavior:"smooth",block:"start"});});const del=document.createElement("button");del.className="danger";del.type="button";del.textContent="Delete";del.addEventListener("click",async()=>{if(!confirm('Delete team member "'+m.name+'"? This cannot be undone.'))return;try{await api("deleteTeamMember",{id:m.id});await loadTeam();showStatus("globalStatus","Team member deleted.",true);}catch(err){showStatus("globalStatus","Delete failed: "+err.message,false);}});actions.append(edit,del);row.append(info,actions);root.appendChild(row);});
+  }
+  $("reloadTeam").addEventListener("click",loadTeam);
 
   const CMS_PAGES = ["index.html","about.html","programs.html","projects.html","impact.html","gallery.html","news.html","contact.html","donate.html","reports.html","team.html","volunteer.html","privacy.html"];
   let pageFields = [];

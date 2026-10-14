@@ -41,6 +41,7 @@
 
   <script src="assets/js/language.js" defer></script>
   <script src="assets/js/main.js" defer></script>
+  <script src="assets/js/config.js"></script>
 </head>
 
 <body>
@@ -52,7 +53,7 @@
     <div class="container header-inner">
 
       <a class="brand" href="index.html" aria-label="Hope & Care Bangladesh Home">
-        <img class="brand-logo" src="assets/images/logo.png" alt="Hope &amp; Care Bangladesh logo">
+        <span class="brand-mark" aria-hidden="true">H+C</span>
         <span class="brand-text">
           <strong>Hope & Care</strong>
           <small>Bangladesh</small>
@@ -367,7 +368,7 @@
 
       <div class="footer-about">
         <a class="brand footer-brand" href="index.html">
-          <img class="brand-logo" src="assets/images/logo.png" alt="Hope &amp; Care Bangladesh logo">
+          <span class="brand-mark" aria-hidden="true">H+C</span>
           <span class="brand-text">
             <strong>Hope & Care</strong>
             <small>Bangladesh</small>
@@ -431,7 +432,27 @@
     </div>
   </footer>
 
-<script src="assets/js/config.js"></script>
-<script src="assets/js/page-cms.js"></script>
+
+<script>
+(function(){
+  const grid=document.querySelector("#our-team .about-team-grid");
+  const endpoint=window.HopeCareConfig&&window.HopeCareConfig.backend&&window.HopeCareConfig.backend.appsScriptEndpoint;
+  if(!grid||!endpoint)return;
+  fetch(endpoint+"?action=team",{cache:"no-store"}).then(r=>r.json()).then(data=>{
+    const members=Array.isArray(data.team)?data.team:[]; if(!members.length)return;
+    grid.replaceChildren();
+    members.forEach(member=>{
+      const card=document.createElement("article");card.className="about-team-card";
+      const photo=document.createElement("div");photo.className="about-team-photo";
+      if(member.photoUrl){const img=document.createElement("img");img.src=member.photoUrl;img.alt=member.name||"Team member";img.loading="lazy";photo.appendChild(img);}else{photo.style.display="grid";photo.style.placeItems="center";const initials=document.createElement("span");initials.textContent=(member.name||"H").split(/\s+/).slice(0,2).map(x=>x[0]||"").join("").toUpperCase();initials.style.cssText="font-size:2.5rem;font-weight:800;color:#246b45";photo.appendChild(initials);}
+      const info=document.createElement("div");info.className="about-team-info";const h=document.createElement("h3");h.textContent=member.name||"";const role=document.createElement("p");role.textContent=member.role||"";info.append(h,role);
+      if(member.bio){const bio=document.createElement("p");bio.textContent=member.bio;bio.style.cssText="margin-top:10px;font-weight:400;font-size:.94rem";info.appendChild(bio);}card.append(photo,info);grid.appendChild(card);
+    });
+    grid.style.gridTemplateColumns=members.length===1?"minmax(0, 360px)":members.length===2?"repeat(2,minmax(0,1fr))":"repeat(3,minmax(0,1fr))";
+    grid.style.justifyContent="center";
+  }).catch(()=>{/* Keep the existing static team cards if the API is temporarily unavailable. */});
+})();
+</script>
+
 </body>
 </html>
