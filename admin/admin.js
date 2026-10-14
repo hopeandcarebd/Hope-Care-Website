@@ -1,1 +1,248 @@
-(function(){'use strict';const endpoint=window.HopeCareConfig?.backend?.appsScriptEndpoint;const $=id=>document.getElementById(id);let token=sessionStorage.getItem('hc-admin-token')||'';let members=[];function status(id,msg,ok=false){const el=$(id);el.textContent=msg;el.classList.remove('hidden');el.style.background=ok?'#e5f5e9':'#fff0e9';el.style.color=ok?'#176b48':'#7d3b20'}async function api(action,data={}){if(!endpoint)throw Error('Apps Script endpoint is missing from config.js');const res=await fetch(endpoint,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,token,...data}),redirect:'follow'});if(!res.ok)throw Error('Backend HTTP error: '+res.status);let out;try{out=await res.json()}catch(e){throw Error('Apps Script did not return JSON. Check the deployed web app and access settings.')}if(!out||out.success!==true)throw Error(out?.message||out?.error||'Request failed');return out}function showDashboard(){ $('loginPanel').classList.add('hidden');$('dashboard').classList.remove('hidden');loadAll()}function showLogin(){ $('dashboard').classList.add('hidden');$('loginPanel').classList.remove('hidden')}async function loadAll(){try{const c=await api('getContent');const d=c.content||{};['storyTitle','location','story','mission','vision','values','heroImage'].forEach(k=>{if(d[k]!==undefined)$(k).value=d[k]});$('draftNotice').checked=d.draftNotice!==false;const selected=Array.isArray(d.focusAreas)?d.focusAreas:[];document.querySelectorAll('#focusOptions input').forEach(x=>x.checked?x.checked=selected.length?selected.includes(x.value):true:x.checked=false);const t=await api('listTeam');members=t.members||[];renderMembers()}catch(e){status('contentStatus','Could not load saved content: '+e.message)}}$('loginForm').addEventListener('submit',async e=>{e.preventDefault();try{const r=await api('login',{password:$('password').value});token=r.token;sessionStorage.setItem('hc-admin-token',token);$('password').value='';showDashboard()}catch(err){status('loginStatus',err.message)}});$('logoutBtn').onclick=()=>{token='';sessionStorage.removeItem('hc-admin-token');showLogin()};if(token)showDashboard();document.querySelectorAll('[data-tab]').forEach(b=>b.onclick=()=>{document.querySelectorAll('[data-tab]').forEach(x=>x.classList.toggle('active',x===b));['aboutTab','teamTab'].forEach(id=>$(id).classList.toggle('hidden',id!==b.dataset.tab))});$('contentForm').addEventListener('submit',async e=>{e.preventDefault();const content={};['storyTitle','location','story','mission','vision','values','heroImage'].forEach(k=>content[k]=$(k).value.trim());content.draftNotice=$('draftNotice').checked;content.focusAreas=[...document.querySelectorAll('#focusOptions input:checked')].map(x=>x.value);try{await api('saveContent',{content});status('contentStatus','About content saved.',true)}catch(err){status('contentStatus','Save failed: '+err.message)}});$('reloadContent').onclick=loadAll;function clearMember(){$('teamForm').reset();$('memberId').value='';$('memberOrder').value='10';$('memberVisible').checked=true;$('clearMember').textContent='Clear form'}$('clearMember').onclick=clearMember;$('teamForm').addEventListener('submit',async e=>{e.preventDefault();const member={id:$('memberId').value,name:$('memberName').value.trim(),role:$('memberRole').value.trim(),photo:$('memberPhoto').value.trim(),bio:$('memberBio').value.trim(),order:Number($('memberOrder').value)||0,visible:$('memberVisible').checked};try{await api('saveTeamMember',{member});status('teamStatus','Team member saved.',true);clearMember();const r=await api('listTeam');members=r.members||[];renderMembers()}catch(err){status('teamStatus','Save failed: '+err.message)}});function renderMembers(){const root=$('membersList');root.replaceChildren();if(!members.length){root.innerHTML='<p class="hint">No members added yet.</p>';return}members.sort((a,b)=>(a.order||0)-(b.order||0));members.forEach(m=>{const card=document.createElement('div');card.className='member';const info=document.createElement('div');const title=document.createElement('strong');title.textContent=m.name+' — '+m.role;const meta=document.createElement('div');meta.className='hint';meta.textContent=(m.visible?'Visible':'Hidden')+(m.photo?' · Photo set':' · No photo');info.append(title,meta);const actions=document.createElement('div');actions.className='member-actions';const edit=document.createElement('button');edit.className='secondary';edit.textContent='Edit';edit.onclick=()=>{ $('memberId').value=m.id||'';$('memberName').value=m.name||'';$('memberRole').value=m.role||'';$('memberPhoto').value=m.photo||'';$('memberBio').value=m.bio||'';$('memberOrder').value=m.order||0;$('memberVisible').checked=m.visible!==false;document.querySelector('[data-tab="teamTab"]').scrollIntoView({behavior:'smooth',block:'start'})};const del=document.createElement('button');del.className='danger';del.textContent='Delete';del.onclick=async()=>{if(!confirm('Delete '+m.name+'?'))return;try{await api('deleteTeamMember',{id:m.id});members=members.filter(x=>x.id!==m.id);renderMembers();status('teamStatus','Team member deleted.',true)}catch(e){status('teamStatus','Delete failed: '+e.message)}};actions.append(edit,del);card.append(info,actions);root.append(card)})}if(!token)showLogin()})();
+(function () {
+  "use strict";
+
+  const endpoint = window.HopeCareConfig &&
+    window.HopeCareConfig.backend &&
+    window.HopeCareConfig.backend.appsScriptEndpoint;
+  const $ = (id) => document.getElementById(id);
+  const CONTENT_KEYS = [
+    "heroTitle", "heroCopy", "aboutText", "missionText", "visionText",
+    "valuesText", "activitiesIntro", "projectsIntro", "contactEmail",
+    "logoUrl", "bannerUrl"
+  ];
+  let token = sessionStorage.getItem("hc-admin-token") || "";
+  let projects = [];
+
+  function showStatus(id, message, success) {
+    const el = $(id);
+    if (!el) return;
+    el.textContent = message;
+    el.classList.remove("hidden");
+    el.style.background = success ? "#e5f5e9" : "#fff0e9";
+    el.style.color = success ? "#176b48" : "#7d3b20";
+  }
+  function hideStatus(id) {
+    const el = $(id);
+    if (el) el.classList.add("hidden");
+  }
+  async function api(action, data, isLogin) {
+    if (!endpoint) throw new Error("Apps Script URL is missing in assets/js/config.js.");
+    const payload = Object.assign({ action: action }, data || {});
+    if (!isLogin && token) payload.token = token;
+    let response;
+    try {
+      response = await fetch(endpoint, {
+        method: "POST",
+        headers: { "Content-Type": "text/plain;charset=utf-8" },
+        body: JSON.stringify(payload),
+        redirect: "follow"
+      });
+    } catch (err) {
+      throw new Error("Could not connect to Apps Script. Check the deployed Web App URL and browser CORS/redirect error.");
+    }
+    if (!response.ok) throw new Error("Apps Script HTTP error (" + response.status + ").");
+    let result;
+    try { result = await response.json(); }
+    catch (err) { throw new Error("Apps Script did not return JSON. Deploy the latest Code.gs as a Web App accessible to the website."); }
+    // This backend uses {ok:true}, not {success:true}.
+    if (!result || !(result.ok === true || result.success === true)) {
+      throw new Error(result && (result.error || result.message) || "The backend rejected this request.");
+    }
+    return result;
+  }
+
+  function showLogin() {
+    $("loginPanel").classList.remove("hidden");
+    $("dashboard").classList.add("hidden");
+  }
+  function showDashboard() {
+    $("loginPanel").classList.add("hidden");
+    $("dashboard").classList.remove("hidden");
+    loadContent();
+    loadProjects();
+  }
+  function switchView(viewId) {
+    document.querySelectorAll(".view").forEach(v => v.classList.toggle("hidden", v.id !== viewId));
+    document.querySelectorAll("[data-view]").forEach(b => b.classList.toggle("active", b.dataset.view === viewId));
+    $("pageTitle").textContent = viewId === "projectsView" ? "Projects" : "Website content";
+  }
+
+  $("loginForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+    hideStatus("loginStatus");
+    const button = $("loginButton");
+    const adminToken = $("adminToken").value;
+    button.disabled = true;
+    button.textContent = "Signing in…";
+    try {
+      // Exact action and field expected by this project's Code.gs.
+      const result = await api("adminLoginToken", { adminToken: adminToken }, true);
+      if (!result.token) throw new Error("Login response did not contain a session token. Check Apps Script deployment version.");
+      token = result.token;
+      sessionStorage.setItem("hc-admin-token", token);
+      $("adminToken").value = "";
+      showDashboard();
+    } catch (err) {
+      showStatus("loginStatus", err.message, false);
+    } finally {
+      button.disabled = false;
+      button.textContent = "Sign In";
+    }
+  });
+
+  $("logoutBtn").addEventListener("click", function () {
+    token = "";
+    sessionStorage.removeItem("hc-admin-token");
+    showLogin();
+  });
+
+  document.querySelectorAll("[data-view]").forEach(button => {
+    button.addEventListener("click", () => switchView(button.dataset.view));
+  });
+
+  async function loadContent() {
+    hideStatus("contentStatus");
+    try {
+      const result = await api("getContent");
+      const content = result.content || {};
+      CONTENT_KEYS.forEach(key => { $(key).value = content[key] || ""; });
+    } catch (err) {
+      if (/session expired|session missing|unauthorized/i.test(err.message)) expireSession(err.message);
+      else showStatus("contentStatus", "Could not load website content: " + err.message, false);
+    }
+  }
+
+  $("contentForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+    hideStatus("contentStatus");
+    const content = {};
+    CONTENT_KEYS.forEach(key => { content[key] = $(key).value.trim(); });
+    try {
+      await api("saveContent", { content: content });
+      showStatus("contentStatus", "Website content saved successfully.", true);
+    } catch (err) {
+      if (/session expired|session missing|unauthorized/i.test(err.message)) expireSession(err.message);
+      else showStatus("contentStatus", "Save failed: " + err.message, false);
+    }
+  });
+  $("reloadContent").addEventListener("click", loadContent);
+
+  function clearProject() {
+    $("projectForm").reset();
+    $("projectId").value = "";
+    $("projectStatus").value = "draft";
+    $("projectFormTitle").textContent = "Add project";
+    hideStatus("projectStatusMessage");
+  }
+  $("clearProject").addEventListener("click", clearProject);
+
+  $("projectForm").addEventListener("submit", async function (event) {
+    event.preventDefault();
+    hideStatus("projectStatusMessage");
+    const id = $("projectId").value.trim();
+    const payload = {
+      id: id,
+      title: $("projectTitle").value.trim(),
+      category: $("projectCategory").value.trim(),
+      location: $("projectLocation").value.trim(),
+      status: $("projectStatus").value,
+      description: $("projectDescription").value.trim(),
+      imageUrl: $("projectImage").value.trim()
+    };
+    try {
+      await api(id ? "updateProject" : "createProject", payload);
+      showStatus("projectStatusMessage", id ? "Project updated." : "Project created.", true);
+      clearProject();
+      await loadProjects();
+    } catch (err) {
+      if (/session expired|session missing|unauthorized/i.test(err.message)) expireSession(err.message);
+      else showStatus("projectStatusMessage", "Could not save project: " + err.message, false);
+    }
+  });
+
+  async function loadProjects() {
+    $("projectsList").textContent = "Loading projects…";
+    try {
+      const result = await api("adminProjects");
+      projects = Array.isArray(result.projects) ? result.projects : [];
+      renderProjects();
+    } catch (err) {
+      $("projectsList").textContent = "Could not load projects: " + err.message;
+      if (/session expired|session missing|unauthorized/i.test(err.message)) expireSession(err.message);
+    }
+  }
+  function renderProjects() {
+    const root = $("projectsList");
+    root.replaceChildren();
+    if (!projects.length) {
+      const p = document.createElement("p");
+      p.className = "muted";
+      p.textContent = "No projects found.";
+      root.appendChild(p);
+      return;
+    }
+    projects.forEach(project => {
+      const row = document.createElement("div");
+      row.className = "project-row";
+      const info = document.createElement("div");
+      const title = document.createElement("strong");
+      title.textContent = project.title || "(Untitled project)";
+      const badge = document.createElement("span");
+      badge.className = "badge";
+      badge.textContent = project.status || "draft";
+      const desc = document.createElement("p");
+      desc.textContent = [project.category, project.location, project.description].filter(Boolean).join(" · ");
+      info.append(title, document.createTextNode(" "), badge, desc);
+      const actions = document.createElement("div");
+      actions.className = "actions";
+      actions.style.marginTop = "0";
+      const edit = document.createElement("button");
+      edit.className = "secondary";
+      edit.type = "button";
+      edit.textContent = "Edit";
+      edit.addEventListener("click", () => {
+        $("projectId").value = project.id || "";
+        $("projectTitle").value = project.title || "";
+        $("projectCategory").value = project.category || "";
+        $("projectLocation").value = project.location || "";
+        $("projectStatus").value = project.status || "draft";
+        $("projectDescription").value = project.description || "";
+        $("projectImage").value = project.imageUrl || "";
+        $("projectFormTitle").textContent = "Edit project";
+        switchView("projectsView");
+        $("projectForm").scrollIntoView({ behavior: "smooth", block: "start" });
+      });
+      const del = document.createElement("button");
+      del.className = "danger";
+      del.type = "button";
+      del.textContent = "Delete";
+      del.addEventListener("click", async () => {
+        if (!window.confirm('Delete project "' + (project.title || "Untitled project") + '"? This cannot be undone.')) return;
+        try {
+          await api("deleteProject", { id: project.id });
+          await loadProjects();
+          showStatus("globalStatus", "Project deleted.", true);
+        } catch (err) {
+          showStatus("globalStatus", "Delete failed: " + err.message, false);
+          if (/session expired|session missing|unauthorized/i.test(err.message)) expireSession(err.message);
+        }
+      });
+      actions.append(edit, del);
+      row.append(info, actions);
+      root.appendChild(row);
+    });
+  }
+  $("reloadProjects").addEventListener("click", loadProjects);
+
+  function expireSession(message) {
+    token = "";
+    sessionStorage.removeItem("hc-admin-token");
+    showLogin();
+    showStatus("loginStatus", message || "Your admin session expired. Please sign in again.", false);
+  }
+
+  // Do not trust a token merely because it exists in sessionStorage. First protected
+  // request verifies it server-side; invalid/expired tokens return the user to login.
+  if (token) showDashboard();
+  else showLogin();
+})();

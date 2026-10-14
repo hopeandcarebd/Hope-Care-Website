@@ -1,16 +1,76 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<title>Hope & Care Bangladesh — Admin</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="color-scheme" content="light">
+<title>Administrator Panel | Hope &amp; Care Bangladesh</title>
 <link rel="stylesheet" href="../assets/css/admin.css">
 <style>
-:root{--green:#176b48;--gold:#e8b83e;--ink:#18352a;--muted:#66766d;--line:#dce6df;--bg:#f4f7f4}*{box-sizing:border-box}body{margin:0;background:var(--bg);font:16px/1.5 system-ui,-apple-system,sans-serif;color:var(--ink)}.wrap{max-width:1050px;margin:auto;padding:24px}.top{display:flex;align-items:center;justify-content:space-between;gap:16px;margin-bottom:22px}.brand{font-weight:800;font-size:1.15rem}.pill{font-size:.82rem;color:var(--green);background:#e2f2e8;border-radius:30px;padding:5px 10px}.panel{background:white;border:1px solid var(--line);border-radius:16px;padding:22px;margin:16px 0;box-shadow:0 8px 25px #173b2610}.narrow{max-width:460px;margin:7vh auto}.grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}label{display:block;font-weight:650;font-size:.92rem;margin:0 0 6px}input,textarea,select{width:100%;font:inherit;padding:11px 12px;border:1px solid #cbd8ce;border-radius:9px;background:white;color:inherit}textarea{min-height:100px;resize:vertical}.field{margin:12px 0}button,.button{font:inherit;font-weight:700;border:0;border-radius:9px;padding:11px 16px;cursor:pointer;background:var(--green);color:white}button.secondary{background:#e9f1eb;color:var(--green)}button.danger{background:#a63737}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:15px}.status{padding:10px 12px;border-radius:8px;background:#f0f4f0;margin:12px 0;white-space:pre-wrap}.hidden{display:none!important}.tabs{display:flex;gap:8px;flex-wrap:wrap}.tabs button{background:#e8efe9;color:var(--green)}.tabs button.active{background:var(--green);color:white}.member{border:1px solid var(--line);padding:13px;border-radius:10px;display:flex;justify-content:space-between;gap:12px;margin:10px 0}.hint{color:var(--muted);font-size:.9rem}.check{display:flex;gap:9px;align-items:center}.check input{width:auto}.member-actions{display:flex;gap:6px;flex-wrap:wrap}.member-actions button{padding:7px 10px;font-size:.86rem}@media(max-width:650px){.wrap{padding:14px}.panel{padding:16px}.grid{grid-template-columns:1fr}.top{align-items:flex-start}.member{flex-direction:column}}
-</style></head><body><div class="wrap">
-<header class="top"><div><div class="brand">Hope & Care Bangladesh</div><div class="hint">Content management</div></div><a href="../index.html" class="pill">View website ↗</a></header>
-<section id="loginPanel" class="panel narrow"><h1>Admin sign in</h1><p class="hint">Sign in using the administrator password configured in Google Apps Script.</p><form id="loginForm"><div class="field"><label for="password">Admin password</label><input id="password" type="password" autocomplete="current-password" required></div><button type="submit">Sign in</button></form><div id="loginStatus" class="status hidden" role="status"></div><p class="hint">First-time setup instructions are in <code>google-apps-script/SETUP.md</code>.</p></section>
-<div id="dashboard" class="hidden"><div class="top"><div><h1 style="margin:0">Admin dashboard</h1><p class="hint" style="margin:3px 0">Edit About content and manage team members.</p></div><button id="logoutBtn" class="secondary">Sign out</button></div>
-<div class="tabs"><button class="active" data-tab="aboutTab">About content</button><button data-tab="teamTab">Team members</button></div>
-<section id="aboutTab" class="panel"><h2>About page content</h2><p class="hint">Mission and vision are draft suggestions until your organization approves them.</p><form id="contentForm"><div class="grid"><div class="field"><label for="storyTitle">Story heading</label><input id="storyTitle" name="storyTitle" value="Our Story Begins With Care"></div><div class="field"><label for="location">Location</label><input id="location" name="location" value="Shalbahan, Tetulia, Panchagarh, Bangladesh"></div></div><div class="field"><label for="story">Our story</label><textarea id="story" name="story" required>Hope & Care Bangladesh is based in Tetulia, Panchagarh, Bangladesh. We aim to build a community where compassion inspires action and people work together toward a better future.</textarea></div><div class="field"><label for="mission">Mission (draft)</label><textarea id="mission" name="mission">To support communities through education, community engagement, volunteer action, environmental care, and health-related initiatives, helping create opportunities for a more caring and inclusive future.</textarea></div><div class="field"><label for="vision">Vision (draft)</label><textarea id="vision" name="vision">A compassionate, healthy, and empowered community where people have opportunities to learn, participate, support one another, and contribute to lasting positive change.</textarea></div><div class="field"><label for="values">Values</label><input id="values" name="values" value="Care, respect, integrity, inclusion, accountability"></div><div class="field"><label for="heroImage">Hero image URL (optional)</label><input id="heroImage" name="heroImage" placeholder="https://...jpg"></div><div class="field"><label>Focus areas</label><div class="grid" id="focusOptions"><label class="check"><input type="checkbox" value="Education & Awareness" checked> Education & Awareness</label><label class="check"><input type="checkbox" value="Community Support" checked> Community Support</label><label class="check"><input type="checkbox" value="Volunteer Engagement" checked> Volunteer Engagement</label><label class="check"><input type="checkbox" value="Environment & Tree Planting" checked> Environment & Tree Planting</label><label class="check"><input type="checkbox" value="Health & Wellbeing" checked> Health & Wellbeing</label><label class="check"><input type="checkbox" value="Other Community Needs" checked> Other Community Needs</label></div></div><label class="check"><input id="draftNotice" type="checkbox" checked> Show a notice that mission/vision wording is proposed draft</label><div class="actions"><button type="submit">Save About content</button><button type="button" id="reloadContent" class="secondary">Reload saved content</button></div></form><div id="contentStatus" class="status hidden" role="status"></div></section>
-<section id="teamTab" class="panel hidden"><h2>Team members</h2><p class="hint">Only publish names, roles and photos that the people have agreed to share.</p><form id="teamForm"><input type="hidden" id="memberId"><div class="grid"><div class="field"><label for="memberName">Full name *</label><input id="memberName" required></div><div class="field"><label for="memberRole">Position *</label><input id="memberRole" required placeholder="Founder, Chairperson, Volunteer…"></div></div><div class="field"><label for="memberPhoto">Photo URL (GitHub raw URL recommended)</label><input id="memberPhoto" type="url" placeholder="https://raw.githubusercontent.com/…"></div><div class="field"><label for="memberBio">Short bio</label><textarea id="memberBio"></textarea></div><div class="grid"><div class="field"><label for="memberOrder">Display order</label><input id="memberOrder" type="number" value="10" min="0"></div><label class="check"><input id="memberVisible" type="checkbox" checked> Visible on public site</label></div><div class="actions"><button type="submit">Save team member</button><button type="button" id="clearMember" class="secondary">Clear form</button></div></form><div id="teamStatus" class="status hidden" role="status"></div><h3>Saved members</h3><div id="membersList"><p class="hint">Loading…</p></div></section>
-</div></div><script src="../assets/js/config.js"></script><script src="admin.js"></script></body></html>
+.login-wrap{min-height:100vh;display:grid;place-items:center;padding:24px;width:100%}
+.login-card{width:min(100%,440px);background:#fff;border:1px solid var(--line,#dce6df);border-radius:20px;padding:30px;box-shadow:0 18px 55px #173b2612}
+.login-card img{width:76px;height:76px;object-fit:contain;display:block;margin:0 auto 14px}
+.login-card h1,.login-card .sub{text-align:center}.login-card h1{margin:0 0 5px}.sub,.hint{color:var(--muted,#66766d)}.login-card .sub{margin:0 0 22px}
+.field{margin:14px 0}.field label{display:block;font-size:13px;font-weight:700;margin-bottom:6px}.field input,.field textarea,.field select{width:100%;font:inherit;padding:11px 12px;border:1px solid var(--line,#dce6df);border-radius:9px;background:white;color:var(--ink,#18352a)}textarea{min-height:100px;resize:vertical}
+button{font:inherit;cursor:pointer}.primary{background:var(--green,#21764f);color:#fff;border:0;border-radius:9px;padding:11px 15px;font-weight:750}.secondary{background:#e8f1ea;color:var(--green,#21764f);border:0;border-radius:9px;padding:10px 14px;font-weight:700}.danger{background:#a63737;color:#fff;border:0;border-radius:9px;padding:8px 11px}.wide{width:100%}.status{margin-top:12px;padding:11px 12px;border-radius:9px;white-space:pre-wrap}.status.hidden,.hidden{display:none!important}.field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.admin-shell{display:flex;min-height:100vh;width:100%}.sidebar{width:245px;flex-shrink:0;background:#fff;border-right:1px solid var(--line,#dce6df);padding:24px 16px;display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:10px;font-weight:800;text-decoration:none;color:var(--ink,#18352a)}.brand img{width:42px;height:42px;object-fit:contain}.nav-label{font-size:11px;color:var(--muted,#66766d);font-weight:800;letter-spacing:.12em;margin:32px 10px 10px}.nav-btn{display:block;width:100%;text-align:left;padding:11px 12px;border:0;border-radius:9px;background:transparent;color:var(--ink,#18352a);margin:2px 0}.nav-btn.active,.nav-btn:hover{background:#e8f4ec;color:var(--green,#21764f);font-weight:750}.sidebar-bottom{margin-top:auto;font-size:12px;color:var(--muted,#66766d);padding:18px 8px 0}.admin-main{padding:28px;max-width:1400px;width:100%;margin:auto}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}.topbar h1{margin:0;font-size:26px}.panel{background:#fff;border:1px solid var(--line,#dce6df);border-radius:14px;padding:22px;margin:16px 0}.panel h2{margin-top:0}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.project-row{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line,#dce6df)}.project-row:last-child{border-bottom:0}.project-row p{margin:5px 0;color:var(--muted,#66766d);font-size:13px}.badge{display:inline-block;border-radius:20px;background:#e8f4ec;padding:3px 9px;font-size:12px}.muted{color:var(--muted,#66766d);font-size:13px}
+@media(max-width:760px){.admin-shell{display:block}.sidebar{width:100%;padding:14px}.sidebar .nav-label,.sidebar-bottom{display:none}.nav-list{display:flex;gap:5px;overflow:auto;margin-top:12px}.nav-btn{white-space:nowrap;width:auto}.admin-main{padding:14px}.field-grid{grid-template-columns:1fr}.panel{padding:16px}.topbar{align-items:flex-start}.login-card{padding:22px}}
+</style>
+</head>
+<body>
+<section id="loginPanel" class="login-wrap">
+  <div class="login-card">
+    <img src="hope-care-logo.png" alt="Hope &amp; Care Bangladesh logo">
+    <h1>Administrator Panel</h1>
+    <p class="sub">Manage Hope &amp; Care Bangladesh</p>
+    <form id="loginForm">
+      <div class="field"><label for="adminToken">Admin Token</label><input id="adminToken" type="password" autocomplete="current-password" placeholder="Enter admin token" required></div>
+      <button class="primary wide" id="loginButton" type="submit">Sign In</button>
+    </form>
+    <div id="loginStatus" class="status hidden" role="status" aria-live="polite"></div>
+    <p class="muted" style="text-align:center;margin:18px 0 0">Authorized administrators only</p>
+  </div>
+</section>
+<div id="dashboard" class="admin-shell hidden">
+  <aside class="sidebar">
+    <a class="brand" href="./"><img src="hope-care-logo.png" alt=""><span>Hope &amp; Care<small style="display:block;font-size:11px;font-weight:500;color:var(--muted)">Bangladesh Admin</small></span></a>
+    <div class="nav-label">WORKSPACE</div>
+    <div class="nav-list">
+      <button class="nav-btn active" data-view="contentView">Website content</button>
+      <button class="nav-btn" data-view="projectsView">Projects</button>
+    </div>
+    <div class="sidebar-bottom">Private administrator workspace<br><span id="sessionStatus">Session active</span></div>
+  </aside>
+  <main class="admin-main">
+    <header class="topbar"><div><p class="muted" style="margin:0 0 5px">HOPE &amp; CARE BANGLADESH</p><h1 id="pageTitle">Website content</h1></div><div class="actions" style="margin:0"><a class="secondary" style="text-decoration:none" href="../index.html">View website ↗</a><button id="logoutBtn" class="secondary" type="button">Sign out</button></div></header>
+    <div id="globalStatus" class="status hidden" role="status"></div>
+    <section id="contentView" class="view">
+      <div class="panel"><h2>Homepage &amp; About content</h2><p class="muted">These fields match the existing Website content sheet keys in your Apps Script backend.</p>
+        <form id="contentForm">
+          <div class="field"><label for="heroTitle">Hero title</label><input id="heroTitle" maxlength="180"></div>
+          <div class="field"><label for="heroCopy">Hero text</label><textarea id="heroCopy" maxlength="1500"></textarea></div>
+          <div class="field"><label for="aboutText">About text</label><textarea id="aboutText" maxlength="2000"></textarea></div>
+          <div class="field-grid"><div class="field"><label for="missionText">Mission</label><textarea id="missionText" maxlength="1500"></textarea></div><div class="field"><label for="visionText">Vision</label><textarea id="visionText" maxlength="1500"></textarea></div></div>
+          <div class="field"><label for="valuesText">Values</label><textarea id="valuesText" maxlength="1500"></textarea></div>
+          <div class="field"><label for="activitiesIntro">Activities introduction</label><textarea id="activitiesIntro" maxlength="1500"></textarea></div>
+          <div class="field"><label for="projectsIntro">Projects introduction</label><textarea id="projectsIntro" maxlength="1500"></textarea></div>
+          <div class="field-grid"><div class="field"><label for="contactEmail">Contact email</label><input id="contactEmail" type="email"></div><div class="field"><label for="logoUrl">Logo URL (optional)</label><input id="logoUrl" type="url" placeholder="https://..."></div></div>
+          <div class="field"><label for="bannerUrl">Banner URL (optional)</label><input id="bannerUrl" type="url" placeholder="https://..."></div>
+          <div class="actions"><button class="primary" type="submit">Save content</button><button class="secondary" id="reloadContent" type="button">Reload</button></div>
+        </form>
+        <div id="contentStatus" class="status hidden" role="status"></div>
+      </div>
+    </section>
+    <section id="projectsView" class="view hidden">
+      <div class="panel"><h2 id="projectFormTitle">Add project</h2><form id="projectForm"><input id="projectId" type="hidden">
+        <div class="field-grid"><div class="field"><label for="projectTitle">Title *</label><input id="projectTitle" required maxlength="140"></div><div class="field"><label for="projectCategory">Category</label><input id="projectCategory" maxlength="80"></div></div>
+        <div class="field-grid"><div class="field"><label for="projectLocation">Location</label><input id="projectLocation" maxlength="120"></div><div class="field"><label for="projectStatus">Status</label><select id="projectStatus"><option value="draft">Draft</option><option value="published">Published</option><option value="completed">Completed</option></select></div></div>
+        <div class="field"><label for="projectDescription">Description *</label><textarea id="projectDescription" required maxlength="1200"></textarea></div>
+        <div class="field"><label for="projectImage">Image URL (optional)</label><input id="projectImage" type="url" placeholder="https://..."></div>
+        <div class="actions"><button class="primary" type="submit">Save project</button><button class="secondary" id="clearProject" type="button">Clear</button></div>
+      </form><div id="projectStatusMessage" class="status hidden" role="status"></div></div>
+      <div class="panel"><div class="topbar"><h2 style="margin:0">Saved projects</h2><button class="secondary" id="reloadProjects" type="button">Refresh</button></div><div id="projectsList"><p class="muted">Loading projects…</p></div></div>
+    </section>
+  </main>
+</div>
+<script src="../assets/js/config.js"></script><script src="admin.js"></script>
+</body></html>
