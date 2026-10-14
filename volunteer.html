@@ -229,15 +229,15 @@
 
           <div class="form-notice">
             <strong
-              data-en="Applications are not open yet."
-              data-bn="আবেদন গ্রহণ এখনো চালু হয়নি।"
-            >আবেদন গ্রহণ এখনো চালু হয়নি।</strong>
+              data-en="Volunteer applications are open."
+              data-bn="স্বেচ্ছাসেবক আবেদন গ্রহণ চলছে।"
+            >স্বেচ্ছাসেবক আবেদন গ্রহণ চলছে।</strong>
 
             <span
-              data-en="This form is a preview. It is not connected to the application database yet, so your information will not be submitted or saved."
-              data-bn="এটি ফর্মের প্রাথমিক কাঠামো। এখনো আবেদন সংরক্ষণের ব্যবস্থার সঙ্গে যুক্ত নয়, তাই আপনার তথ্য জমা বা সংরক্ষণ হবে না।"
+              data-en="Submit this form to send your application to Hope & Care Bangladesh. Your information will be securely recorded for our team to review."
+              data-bn="এই ফর্ম জমা দিলে আপনার আবেদন Hope & Care Bangladesh-এর কাছে পৌঁছাবে এবং আমাদের টিমের পর্যালোচনার জন্য Google Sheets-এ সংরক্ষিত হবে।"
             >
-              এটি ফর্মের প্রাথমিক কাঠামো। এখনো আবেদন সংরক্ষণের ব্যবস্থার সঙ্গে যুক্ত নয়, তাই আপনার তথ্য জমা বা সংরক্ষণ হবে না।
+              এই ফর্ম জমা দিলে আপনার আবেদন Hope & Care Bangladesh-এর কাছে পৌঁছাবে এবং আমাদের টিমের পর্যালোচনার জন্য সংরক্ষিত হবে।
             </span>
           </div>
 
@@ -255,7 +255,6 @@
                   autocomplete="name"
                   required
                   maxlength="100"
-                  disabled
                 >
               </div>
 
@@ -270,7 +269,6 @@
                   autocomplete="email"
                   required
                   maxlength="150"
-                  disabled
                 >
               </div>
 
@@ -285,7 +283,6 @@
                   autocomplete="tel"
                   required
                   maxlength="25"
-                  disabled
                 >
               </div>
 
@@ -299,7 +296,6 @@
                   type="text"
                   autocomplete="address-level1"
                   maxlength="100"
-                  disabled
                 >
               </div>
 
@@ -307,7 +303,7 @@
                 <label for="volunteer-interest" data-en="Area of interest *" data-bn="আগ্রহের ক্ষেত্র *">
                   আগ্রহের ক্ষেত্র *
                 </label>
-                <select id="volunteer-interest" name="interest" required disabled>
+                <select id="volunteer-interest" name="interest" required>
                   <option value="" data-en="Select an area" data-bn="একটি ক্ষেত্র নির্বাচন করুন">
                     একটি ক্ষেত্র নির্বাচন করুন
                   </option>
@@ -339,7 +335,7 @@
                 <label for="volunteer-availability" data-en="Availability" data-bn="সময় দেওয়ার সুযোগ">
                   সময় দেওয়ার সুযোগ
                 </label>
-                <select id="volunteer-availability" name="availability" disabled>
+                <select id="volunteer-availability" name="availability">
                   <option value="" data-en="Please select" data-bn="নির্বাচন করুন">
                     নির্বাচন করুন
                   </option>
@@ -366,7 +362,6 @@
                   id="volunteer-message"
                   name="message"
                   maxlength="1500"
-                  disabled
                 ></textarea>
               </div>
 
@@ -378,7 +373,6 @@
                 name="consent"
                 type="checkbox"
                 required
-                disabled
               >
               <span
                 data-en="I agree that Hope & Care Bangladesh may use the information I provide to contact me about volunteering."
@@ -391,11 +385,10 @@
             <button
               class="submit-button"
               type="submit"
-              disabled
-              data-en="Applications opening soon"
-              data-bn="আবেদন শিগগিরই চালু হবে"
+              data-en="Submit Volunteer Application"
+              data-bn="স্বেচ্ছাসেবক আবেদন জমা দিন"
             >
-              আবেদন শিগগিরই চালু হবে
+              স্বেচ্ছাসেবক আবেদন জমা দিন
             </button>
           </form>
 
@@ -449,6 +442,5 @@
   <script src="assets/js/config.js"></script>
   <script src="assets/js/form-handler.js"></script>
 
-<script src="assets/js/page-cms.js"></script>
 </body>
 </html>
