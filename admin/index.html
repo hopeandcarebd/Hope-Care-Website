@@ -19,7 +19,7 @@ button{font:inherit;cursor:pointer}.primary{background:var(--green,#21764f);colo
 <body>
 <section id="loginPanel" class="login-wrap">
   <div class="login-card">
-    <img src="hope-care-logo.png" alt="Hope &amp; Care Bangladesh logo">
+    <img src="../assets/images/logo.png" alt="Hope &amp; Care Bangladesh logo">
     <h1>Administrator Panel</h1>
     <p class="sub">Manage Hope &amp; Care Bangladesh</p>
     <form id="loginForm">
@@ -32,7 +32,7 @@ button{font:inherit;cursor:pointer}.primary{background:var(--green,#21764f);colo
 </section>
 <div id="dashboard" class="admin-shell hidden">
   <aside class="sidebar">
-    <a class="brand" href="./"><img src="hope-care-logo.png" alt=""><span>Hope &amp; Care<small style="display:block;font-size:11px;font-weight:500;color:var(--muted)">Bangladesh Admin</small></span></a>
+    <a class="brand" href="./"><img src="../assets/images/logo.png" alt=""><span>Hope &amp; Care<small style="display:block;font-size:11px;font-weight:500;color:var(--muted)">Bangladesh Admin</small></span></a>
     <div class="nav-label">WORKSPACE</div>
     <div class="nav-list">
       <button class="nav-btn active" data-view="contentView">Website content</button>
@@ -66,7 +66,8 @@ button{font:inherit;cursor:pointer}.primary{background:var(--green,#21764f);colo
         <div class="field-grid"><div class="field"><label for="projectTitle">Title *</label><input id="projectTitle" required maxlength="140"></div><div class="field"><label for="projectCategory">Category</label><input id="projectCategory" maxlength="80"></div></div>
         <div class="field-grid"><div class="field"><label for="projectLocation">Location</label><input id="projectLocation" maxlength="120"></div><div class="field"><label for="projectStatus">Status</label><select id="projectStatus"><option value="draft">Draft</option><option value="published">Published</option><option value="completed">Completed</option></select></div></div>
         <div class="field"><label for="projectDescription">Description *</label><textarea id="projectDescription" required maxlength="1200"></textarea></div>
-        <div class="field"><label for="projectImage">Image URL (optional)</label><input id="projectImage" type="url" placeholder="https://..."></div>
+        <div class="field-grid"><div class="field"><label for="projectImageFile">Upload project photo to GitHub</label><input id="projectImageFile" type="file" accept="image/png,image/jpeg,image/webp,image/gif"><small class="muted">Choose an image up to 4 MB. GitHub upload requires a token stored in Apps Script Script Properties.</small><div id="projectImageUploadStatus" class="status hidden" role="status"></div></div><div class="field"><label for="projectImage">Image URL (optional)</label><input id="projectImage" type="url" placeholder="Uploaded GitHub image URL or https://..."><img id="projectImagePreview" alt="Project photo preview" class="hidden" style="display:block;max-width:220px;max-height:130px;object-fit:cover;border-radius:10px;margin-top:8px"></div></div>
+        <label class="check" style="display:flex;align-items:center;gap:9px;margin:12px 0"><input id="projectFeatured" type="checkbox"> Feature this project on the Home page</label>
         <div class="actions"><button class="primary" type="submit">Save project</button><button class="secondary" id="clearProject" type="button">Clear</button></div>
       </form><div id="projectStatusMessage" class="status hidden" role="status"></div></div>
       <div class="panel"><div class="topbar"><h2 style="margin:0">Saved projects</h2><button class="secondary" id="reloadProjects" type="button">Refresh</button></div><div id="projectsList"><p class="muted">Loading projects…</p></div></div>

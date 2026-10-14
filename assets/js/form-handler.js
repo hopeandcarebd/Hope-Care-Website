@@ -69,7 +69,6 @@
 
   function collectPayload(form, type) {
     const payload = {
-      action: type,
       type: type,
       name: getField(form, ["name", "fullName", "full_name"]),
       email: getField(form, ["email", "emailAddress", "email_address"]),
@@ -179,12 +178,12 @@
       });
 
       if (!response.ok) {
-        throw new Error("The server returned HTTP " + response.status + ".");
+        throw new Error("The server returned an HTTP error.");
       }
 
       const result = await response.json();
 
-      if (!result || (result.success !== true && result.ok !== true)) {
+      if (!result || result.success !== true) {
         throw new Error(
           result && result.message
             ? result.message
@@ -206,7 +205,7 @@
 
       showMessage(
         form,
-        (error && error.message ? error.message + " " : "") + "We could not confirm your submission. Please try again later or contact hopeandcarebd@gmail.com.",
+        "We could not confirm your submission. Please try again later or contact hopeandcarebd@gmail.com.",
         "error"
       );
     } finally {

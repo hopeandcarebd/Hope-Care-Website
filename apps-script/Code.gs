@@ -17,6 +17,7 @@ function setup() {
   let sid=props.getProperty("SPREADSHEET_ID"),ss=sid?SpreadsheetApp.openById(sid):SpreadsheetApp.create("Hope & Care Bangladesh — Website Data");
   props.setProperty("SPREADSHEET_ID",ss.getId());
   ensure_(ss,TAB.projects,["id","title","category","location","description","imageUrl","status","createdAt","updatedAt"]);
+  ensureColumns_(ss.getSheetByName(TAB.projects),["featured"]);
   ensure_(ss,TAB.contacts,["createdAt","name","email","subject","message","language","page"]);
   ensure_(ss,TAB.volunteers,["createdAt","name","email","phone","interest","message","language","page"]);
   ensure_(ss,TAB.sessions,["tokenHash","email","expiresAt"]);
@@ -119,10 +120,33 @@ function writeProject_(p,updating){
   const old=updating?rows[row-1]:null,now=new Date(),created=old?old[7]:now,url=clean_(p.imageUrl,1000);
   if(url&&!/^https:\/\//i.test(url))throw Error("Image URL must start with https://");
   const status=["draft","published","completed"].includes(String(p.status))?String(p.status):"draft";
-  const values=[id,title,clean_(p.category,80),clean_(p.location,120),description,url,status,created,now];
+  const featured = p.featured === true || String(p.featured).toLowerCase() === "true";
+  const values=[id,title,clean_(p.category,80),clean_(p.location,120),description,url,status,created,now,featured];
   if(updating)s.getRange(row,1,1,values.length).setValues([values]);else s.appendRow(values);return projectObject_(values);
 }
 function deleteProject_(id){const s=ss_().getSheetByName(TAB.projects),r=s.getDataRange().getValues();for(let i=1;i<r.length;i++)if(String(r[i][0])===String(id)){s.deleteRow(i+1);return}throw Error("Project not found.");}
+function uploadProjectImageToGitHub_(p){
+  const token=PropertiesService.getScriptProperties().getProperty("GITHUB_TOKEN");
+  if(!token)throw Error("GitHub image upload is not configured. Add GITHUB_TOKEN in Apps Script Script Properties.");
+  const owner=PropertiesService.getScriptProperties().getProperty("GITHUB_OWNER")||"hopeandcarebd";
+  const repo=PropertiesService.getScriptProperties().getProperty("GITHUB_REPO")||"Hope-Care-Website";
+  const branch=PropertiesService.getScriptProperties().getProperty("GITHUB_BRANCH")||"main";
+  const mime=clean_(p.mimeType,80).toLowerCase();
+  const extMap={"image/jpeg":"jpg","image/png":"png","image/webp":"webp","image/gif":"gif"};
+  if(!extMap[mime])throw Error("Only JPEG, PNG, WebP and GIF images are supported.");
+  const b64=String(p.base64||"");if(!b64)throw Error("Image content is missing.");
+  const bytes=Utilities.base64Decode(b64);if(bytes.length>4*1024*1024)throw Error("Image must be 4 MB or smaller.");
+  const original=clean_(p.fileName,160).replace(/\.[^.]+$/,""),slug=original.toLowerCase().replace(/[^a-z0-9]+/g,"-").replace(/^-+|-+$/g,"").slice(0,55)||"project-image";
+  const stamp=Utilities.formatDate(new Date(),"UTC","yyyyMMdd-HHmmss");
+  const path="assets/images/projects/"+slug+"-"+stamp+"."+extMap[mime];
+  const url="https://api.github.com/repos/"+owner+"/"+repo+"/contents/"+path;
+  const response=UrlFetchApp.fetch(url,{method:"put",contentType:"application/json",headers:{Authorization:"Bearer "+token,Accept:"application/vnd.github+json","X-GitHub-Api-Version":"2022-11-28","User-Agent":"Hope-Care-Bangladesh-Website"},payload:JSON.stringify({message:"Upload project image: "+slug,content:b64,branch:branch}),muteHttpExceptions:true});
+  const code=response.getResponseCode(),body=response.getContentText();
+  if(code!==201&&code!==200){let detail=body;try{detail=JSON.parse(body).message||body}catch(_){};throw Error("GitHub upload failed ("+code+"): "+String(detail).slice(0,350));}
+  const publicUrl="https://raw.githubusercontent.com/"+owner+"/"+repo+"/"+branch+"/"+path;
+  return {ok:true,url:publicUrl,path:path,commit:JSON.parse(body).commit&&JSON.parse(body).commit.sha||""};
+}
+
 function uploadFile_(p){
   const name=clean_(p.fileName,180),mime=clean_(p.mimeType,100),b64=String(p.base64||"");
   if(!name||!b64)throw Error("File name or content missing.");
@@ -168,7 +192,7 @@ function allContent_(){const rows=ss_().getSheetByName(TAB.content).getDataRange
 function publicContent_(){return allContent_();}
 function publicProjects_(){return allProjects_().filter(p=>["published","completed"].includes(p.status));}
 function allProjects_(){const r=ss_().getSheetByName(TAB.projects).getDataRange().getValues();return r.slice(1).filter(x=>x[0]).map(projectObject_).sort((a,b)=>String(b.updatedAt).localeCompare(String(a.updatedAt)));}
-function projectObject_(r){return {id:String(r[0]),title:String(r[1]||""),category:String(r[2]||""),location:String(r[3]||""),description:String(r[4]||""),imageUrl:String(r[5]||""),status:String(r[6]||"draft"),createdAt:r[7] instanceof Date?r[7].toISOString():String(r[7]||""),updatedAt:r[8] instanceof Date?r[8].toISOString():String(r[8]||"")};}
+function projectObject_(r){return {id:String(r[0]),title:String(r[1]||""),category:String(r[2]||""),location:String(r[3]||""),description:String(r[4]||""),imageUrl:String(r[5]||""),status:String(r[6]||"draft"),createdAt:r[7] instanceof Date?r[7].toISOString():String(r[7]||""),updatedAt:r[8] instanceof Date?r[8].toISOString():String(r[8]||""),featured:r[9]===true||String(r[9]).toLowerCase()==="true"};}
 function ensure_(ss,n,headers){let s=ss.getSheetByName(n);if(!s)s=ss.insertSheet(n);if(!s.getLastRow())s.appendRow(headers);return s;}
 function ss_(){const id=PropertiesService.getScriptProperties().getProperty("SPREADSHEET_ID");if(!id)throw Error("Backend not initialized: run setup() in Apps Script.");return SpreadsheetApp.openById(id);}
 function clean_(v,n){return String(v==null?"":v).replace(/[\u0000-\u001F]/g," ").trim().slice(0,n||3000);}

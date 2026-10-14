@@ -37,16 +37,11 @@
     }
 
     .volunteer-container {
-      width: min(850px, 100%);
       max-width: 850px;
       margin: 0 auto;
-      box-sizing: border-box;
     }
 
     .volunteer-form {
-      width: 100%;
-      min-width: 0;
-      box-sizing: border-box;
       padding: 28px;
       border: 1px solid #dce8df;
       border-radius: 14px;
@@ -116,11 +111,8 @@
 
     .consent-row {
       display: flex;
-      width: 100%;
-      max-width: 100%;
-      box-sizing: border-box;
       align-items: flex-start;
-      gap: 12px;
+      gap: 10px;
       margin: 24px 0;
       line-height: 1.7;
     }
@@ -131,76 +123,15 @@
     }
 
     .submit-button {
-      display: inline-flex;
-      align-items: center;
-      justify-content: center;
-      min-height: 48px;
-      padding: 13px 24px;
+      padding: 13px 22px;
       border: 0;
       border-radius: 7px;
-      background: #0878d1;
+      background: #8a9b8e;
       color: #fff;
       font: inherit;
       font-weight: 700;
-      cursor: pointer;
-      opacity: 1;
-      transition: background-color 160ms ease, transform 160ms ease;
-    }
-
-    .submit-button:hover:not(:disabled) {
-      background: #075fa8;
-    }
-
-    .submit-button:focus-visible {
-      outline: 3px solid #8bc7ff;
-      outline-offset: 3px;
-    }
-
-    .submit-button:disabled {
-      background: #6aa9dc;
-      cursor: wait;
+      cursor: not-allowed;
       opacity: 0.85;
-    }
-
-    .consent-row input {
-      flex: 0 0 18px;
-      width: 18px;
-      height: 18px;
-      margin: 4px 0 0;
-    }
-
-    .consent-row span {
-      display: block;
-      flex: 1 1 auto;
-      min-width: 0;
-      overflow-wrap: anywhere;
-    }
-
-    [data-form-status] {
-      width: 100%;
-      box-sizing: border-box;
-      margin: 14px 0 0;
-      padding: 10px 12px;
-      border-radius: 7px;
-      overflow-wrap: anywhere;
-    }
-
-    [data-form-status][data-status-type="success"] {
-      color: #155e36;
-      background: #eaf7ef;
-    }
-
-    [data-form-status][data-status-type="error"],
-    [data-form-status][data-status-type="warning"] {
-      color: #8a271c;
-      background: #fff0ed;
-    }
-
-    .consent-row span {
-      display: block;
-      flex: 1;
-      min-width: 0;
-      overflow-wrap: anywhere;
     }
 
     .volunteer-help {
@@ -216,10 +147,6 @@
 
       .volunteer-form {
         padding: 20px;
-      }
-
-      .submit-button {
-        width: 100%;
       }
 
       .volunteer-hero {
@@ -302,15 +229,15 @@
 
           <div class="form-notice">
             <strong
-              data-en="Volunteer applications are open."
-              data-bn="স্বেচ্ছাসেবক আবেদন গ্রহণ চলছে।"
-            >স্বেচ্ছাসেবক আবেদন গ্রহণ চলছে।</strong>
+              data-en="Applications are not open yet."
+              data-bn="আবেদন গ্রহণ এখনো চালু হয়নি।"
+            >আবেদন গ্রহণ এখনো চালু হয়নি।</strong>
 
             <span
-              data-en="Submit this form to send your application to Hope & Care Bangladesh. Your information will be securely recorded for our team to review."
-              data-bn="এই ফর্ম জমা দিলে আপনার আবেদন Hope & Care Bangladesh-এর কাছে পৌঁছাবে এবং আমাদের টিমের পর্যালোচনার জন্য Google Sheets-এ সংরক্ষিত হবে।"
+              data-en="This form is a preview. It is not connected to the application database yet, so your information will not be submitted or saved."
+              data-bn="এটি ফর্মের প্রাথমিক কাঠামো। এখনো আবেদন সংরক্ষণের ব্যবস্থার সঙ্গে যুক্ত নয়, তাই আপনার তথ্য জমা বা সংরক্ষণ হবে না।"
             >
-              এই ফর্ম জমা দিলে আপনার আবেদন Hope & Care Bangladesh-এর কাছে পৌঁছাবে এবং আমাদের টিমের পর্যালোচনার জন্য সংরক্ষিত হবে।
+              এটি ফর্মের প্রাথমিক কাঠামো। এখনো আবেদন সংরক্ষণের ব্যবস্থার সঙ্গে যুক্ত নয়, তাই আপনার তথ্য জমা বা সংরক্ষণ হবে না।
             </span>
           </div>
 
@@ -328,6 +255,7 @@
                   autocomplete="name"
                   required
                   maxlength="100"
+                  disabled
                 >
               </div>
 
@@ -342,6 +270,7 @@
                   autocomplete="email"
                   required
                   maxlength="150"
+                  disabled
                 >
               </div>
 
@@ -356,6 +285,7 @@
                   autocomplete="tel"
                   required
                   maxlength="25"
+                  disabled
                 >
               </div>
 
@@ -369,6 +299,7 @@
                   type="text"
                   autocomplete="address-level1"
                   maxlength="100"
+                  disabled
                 >
               </div>
 
@@ -376,7 +307,7 @@
                 <label for="volunteer-interest" data-en="Area of interest *" data-bn="আগ্রহের ক্ষেত্র *">
                   আগ্রহের ক্ষেত্র *
                 </label>
-                <select id="volunteer-interest" name="interest" required>
+                <select id="volunteer-interest" name="interest" required disabled>
                   <option value="" data-en="Select an area" data-bn="একটি ক্ষেত্র নির্বাচন করুন">
                     একটি ক্ষেত্র নির্বাচন করুন
                   </option>
@@ -408,7 +339,7 @@
                 <label for="volunteer-availability" data-en="Availability" data-bn="সময় দেওয়ার সুযোগ">
                   সময় দেওয়ার সুযোগ
                 </label>
-                <select id="volunteer-availability" name="availability">
+                <select id="volunteer-availability" name="availability" disabled>
                   <option value="" data-en="Please select" data-bn="নির্বাচন করুন">
                     নির্বাচন করুন
                   </option>
@@ -435,6 +366,7 @@
                   id="volunteer-message"
                   name="message"
                   maxlength="1500"
+                  disabled
                 ></textarea>
               </div>
 
@@ -446,6 +378,7 @@
                 name="consent"
                 type="checkbox"
                 required
+                disabled
               >
               <span
                 data-en="I agree that Hope & Care Bangladesh may use the information I provide to contact me about volunteering."
@@ -458,10 +391,11 @@
             <button
               class="submit-button"
               type="submit"
-              data-en="Submit Volunteer Application"
-              data-bn="স্বেচ্ছাসেবক আবেদন জমা দিন"
+              disabled
+              data-en="Applications opening soon"
+              data-bn="আবেদন শিগগিরই চালু হবে"
             >
-              স্বেচ্ছাসেবক আবেদন জমা দিন
+              আবেদন শিগগিরই চালু হবে
             </button>
           </form>
 
@@ -515,5 +449,6 @@
   <script src="assets/js/config.js"></script>
   <script src="assets/js/form-handler.js"></script>
 
+<script src="assets/js/page-cms.js"></script>
 </body>
 </html>

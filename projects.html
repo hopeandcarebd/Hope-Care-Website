@@ -67,12 +67,8 @@
 <div><span class="eyebrow" data-bn="প্রকল্পের তালিকা" data-en="PROJECT DIRECTORY">PROJECT DIRECTORY</span><h2 data-bn="প্রকল্পের তথ্য" data-en="Project information">Project information</h2></div>
 <p data-bn="সংস্থার কাছ থেকে যাচাইকৃত তথ্য ছাড়া কোনো প্রকল্পকে চলমান হিসেবে দেখানো হচ্ছে না।" data-en="No individual project is presented as active without verified details from the organization.">No individual project is presented as active without verified details from the organization.</p>
 </div>
-<div class="hc-project-grid">
-<article class="hc-project-card hc-project-card-featured"><div class="hc-project-card-top"><span class="hc-project-index">01</span><span class="hc-project-status" data-bn="তথ্য অপেক্ষমাণ" data-en="DETAILS PENDING">DETAILS PENDING</span></div><div class="hc-project-card-body"><span class="eyebrow" data-bn="প্রকল্প পরিচিতি" data-en="PROJECT PROFILE">PROJECT PROFILE</span><h3 data-bn="এখানে প্রকল্পের বিস্তারিত যুক্ত হবে" data-en="Project details will be added here">Project details will be added here</h3><p data-bn="এই তালিকার জন্য অনুমোদিত প্রকল্পের নাম, বিবরণ, স্থান ও সময়সীমা এখনো দেওয়া হয়নি।" data-en="An approved project name, description, location and timeline have not yet been provided for this listing.">An approved project name, description, location and timeline have not yet been provided for this listing.</p></div></article>
-<article class="hc-project-card"><div class="hc-project-card-top"><span class="hc-project-index">02</span><span class="hc-project-status" data-bn="আপডেট" data-en="UPDATES">UPDATES</span></div><div class="hc-project-card-body"><span class="eyebrow" data-bn="অগ্রগতি ও সংবাদ" data-en="PROGRESS &amp; NEWS">PROGRESS &amp; NEWS</span><h3 data-bn="প্রকল্পের আপডেট" data-en="Project updates">Project updates</h3><p data-bn="সহায়ক তথ্য পাওয়া গেলে যাচাইকৃত কার্যক্রম ও অগ্রগতির আপডেট প্রকাশ করা যাবে।" data-en="Verified activity notes and progress updates can be shared when supporting information is available.">Verified activity notes and progress updates can be shared when supporting information is available.</p><a class="hc-text-link" data-bn="সংবাদ ও ইভেন্ট দেখুন →" data-en="View news &amp; events →" href="news.html">View news &amp; events →</a></div></article>
-<article class="hc-project-card"><div class="hc-project-card-top"><span class="hc-project-index">03</span><span class="hc-project-status" data-bn="প্রকাশ্য নথি" data-en="PUBLIC RECORDS">PUBLIC RECORDS</span></div><div class="hc-project-card-body"><span class="eyebrow" data-bn="নথিপত্র" data-en="DOCUMENTATION">DOCUMENTATION</span><h3 data-bn="প্রতিবেদন ও নথি" data-en="Reports &amp; documents">Reports &amp; documents</h3><p data-bn="পর্যালোচনা ও অনুমোদনের পর প্রকাশ্য প্রতিবেদন এবং প্রাসঙ্গিক প্রকল্পের নথি এখানে যুক্ত করা যাবে।" data-en="Public reports and relevant project documents can be linked here after review and approval.">Public reports and relevant project documents can be linked here after review and approval.</p><a class="hc-text-link" data-bn="প্রতিবেদন দেখুন →" data-en="Browse reports →" href="reports.html">Browse reports →</a></div></article>
-</div>
-<p class="hc-content-note" data-bn="উপরের কার্ডগুলো পৃষ্ঠার কাঠামোগত নমুনা। এগুলো কোনো প্রকল্প বর্তমানে চলছে—এমন নিশ্চয়তা নয়।" data-en="The cards above are page structure placeholders. They do not confirm that a project is currently running.">The cards above are page structure placeholders. They do not confirm that a project is currently running.</p>
+<div class="hc-project-grid" id="live-project-grid"><p class="hc-content-note">Loading published projects…</p></div>
+<p class="hc-content-note" id="project-load-note" data-bn="প্রকাশিত প্রকল্পগুলো এখানে দেখানো হবে।" data-en="Published projects managed from the admin panel appear here.">Published projects managed from the admin panel appear here.</p>
 </div>
 </section>
 <section class="hc-bottom-cta">
@@ -141,5 +137,6 @@
 </footer>
 <script src="assets/js/config.js"></script>
 <script src="assets/js/page-cms.js"></script>
+<script src="assets/js/project-feed.js"></script>
 </body>
 </html>

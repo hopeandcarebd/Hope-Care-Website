@@ -131,10 +131,47 @@
     $("projectForm").reset();
     $("projectId").value = "";
     $("projectStatus").value = "draft";
+    $("projectFeatured").checked = false;
+    $("projectImageFile").value = "";
+    $("projectImagePreview").classList.add("hidden");
     $("projectFormTitle").textContent = "Add project";
     hideStatus("projectStatusMessage");
   }
   $("clearProject").addEventListener("click", clearProject);
+
+  function updateProjectImagePreview() {
+    const url = $("projectImage").value.trim();
+    const preview = $("projectImagePreview");
+    if (url && /^https:\/\//i.test(url)) { preview.src = url; preview.classList.remove("hidden"); }
+    else { preview.removeAttribute("src"); preview.classList.add("hidden"); }
+  }
+  $("projectImage").addEventListener("input", updateProjectImagePreview);
+  $("projectImageFile").addEventListener("change", async function () {
+    const file = this.files && this.files[0];
+    if (!file) return;
+    const status = "projectImageUploadStatus";
+    hideStatus(status);
+    if (!/^image\/(png|jpeg|webp|gif)$/i.test(file.type)) {
+      showStatus(status, "Choose a PNG, JPEG, WebP or GIF image.", false); this.value = ""; return;
+    }
+    if (file.size > 4 * 1024 * 1024) {
+      showStatus(status, "Image must be 4 MB or smaller.", false); this.value = ""; return;
+    }
+    showStatus(status, "Uploading image to GitHub…", true);
+    try {
+      const dataUrl = await new Promise((resolve, reject) => {
+        const reader = new FileReader(); reader.onload = () => resolve(String(reader.result || "")); reader.onerror = () => reject(new Error("Could not read image file.")); reader.readAsDataURL(file);
+      });
+      const base64 = dataUrl.split(",")[1];
+      const result = await api("uploadProjectImage", { fileName: file.name, mimeType: file.type, base64: base64 });
+      if (!result.url) throw new Error("GitHub upload response did not include an image URL.");
+      $("projectImage").value = result.url;
+      updateProjectImagePreview();
+      showStatus(status, "Image uploaded to GitHub successfully.", true);
+    } catch (err) {
+      showStatus(status, "Image upload failed: " + err.message, false);
+    }
+  });
 
   $("projectForm").addEventListener("submit", async function (event) {
     event.preventDefault();
@@ -147,7 +184,8 @@
       location: $("projectLocation").value.trim(),
       status: $("projectStatus").value,
       description: $("projectDescription").value.trim(),
-      imageUrl: $("projectImage").value.trim()
+      imageUrl: $("projectImage").value.trim(),
+      featured: $("projectFeatured").checked
     };
     try {
       await api(id ? "updateProject" : "createProject", payload);
@@ -208,6 +246,8 @@
         $("projectStatus").value = project.status || "draft";
         $("projectDescription").value = project.description || "";
         $("projectImage").value = project.imageUrl || "";
+        $("projectFeatured").checked = project.featured === true || String(project.featured) === "true";
+        updateProjectImagePreview();
         $("projectFormTitle").textContent = "Edit project";
         switchView("projectsView");
         $("projectForm").scrollIntoView({ behavior: "smooth", block: "start" });
