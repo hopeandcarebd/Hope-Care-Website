@@ -37,11 +37,16 @@
     }
 
     .volunteer-container {
+      width: min(850px, 100%);
       max-width: 850px;
       margin: 0 auto;
+      box-sizing: border-box;
     }
 
     .volunteer-form {
+      width: 100%;
+      min-width: 0;
+      box-sizing: border-box;
       padding: 28px;
       border: 1px solid #dce8df;
       border-radius: 14px;
@@ -111,8 +116,11 @@
 
     .consent-row {
       display: flex;
+      width: 100%;
+      max-width: 100%;
+      box-sizing: border-box;
       align-items: flex-start;
-      gap: 10px;
+      gap: 12px;
       margin: 24px 0;
       line-height: 1.7;
     }
@@ -123,28 +131,69 @@
     }
 
     .submit-button {
-      padding: 13px 22px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      min-height: 48px;
+      padding: 13px 24px;
       border: 0;
       border-radius: 7px;
-      background: #8a9b8e;
+      background: #0878d1;
       color: #fff;
       font: inherit;
       font-weight: 700;
       cursor: pointer;
       opacity: 1;
+      transition: background-color 160ms ease, transform 160ms ease;
+    }
+
+    .submit-button:hover:not(:disabled) {
+      background: #075fa8;
+    }
+
+    .submit-button:focus-visible {
+      outline: 3px solid #8bc7ff;
+      outline-offset: 3px;
     }
 
     .submit-button:disabled {
+      background: #6aa9dc;
       cursor: wait;
-      opacity: 0.7;
+      opacity: 0.85;
     }
 
-    .consent-row {
-      display: flex;
+    .consent-row input {
+      flex: 0 0 18px;
+      width: 18px;
+      height: 18px;
+      margin: 4px 0 0;
+    }
+
+    .consent-row span {
+      display: block;
+      flex: 1 1 auto;
+      min-width: 0;
+      overflow-wrap: anywhere;
+    }
+
+    [data-form-status] {
       width: 100%;
-      align-items: flex-start;
-      gap: 12px;
       box-sizing: border-box;
+      margin: 14px 0 0;
+      padding: 10px 12px;
+      border-radius: 7px;
+      overflow-wrap: anywhere;
+    }
+
+    [data-form-status][data-status-type="success"] {
+      color: #155e36;
+      background: #eaf7ef;
+    }
+
+    [data-form-status][data-status-type="error"],
+    [data-form-status][data-status-type="warning"] {
+      color: #8a271c;
+      background: #fff0ed;
     }
 
     .consent-row span {
@@ -167,6 +216,10 @@
 
       .volunteer-form {
         padding: 20px;
+      }
+
+      .submit-button {
+        width: 100%;
       }
 
       .volunteer-hero {
