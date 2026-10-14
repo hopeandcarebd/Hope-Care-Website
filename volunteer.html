@@ -130,8 +130,28 @@
       color: #fff;
       font: inherit;
       font-weight: 700;
-      cursor: not-allowed;
-      opacity: 0.85;
+      cursor: pointer;
+      opacity: 1;
+    }
+
+    .submit-button:disabled {
+      cursor: wait;
+      opacity: 0.7;
+    }
+
+    .consent-row {
+      display: flex;
+      width: 100%;
+      align-items: flex-start;
+      gap: 12px;
+      box-sizing: border-box;
+    }
+
+    .consent-row span {
+      display: block;
+      flex: 1;
+      min-width: 0;
+      overflow-wrap: anywhere;
     }
 
     .volunteer-help {
