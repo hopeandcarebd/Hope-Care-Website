@@ -30,25 +30,29 @@ function setup() {
 }
 function doGet(e){
   const action=String((e&&e.parameter&&e.parameter.action)||"");
-  if(action==="projects")return out_({ok:true,projects:publicProjects_()});
-  if(action==="content")return out_({ok:true,content:publicContent_()});
-  return out_({ok:true,service:"Hope & Care Bangladesh API",actions:["projects","content"]});
+  if(action==="projects")return out_({ok:true,success:true,projects:publicProjects_()});
+  if(action==="content"||action==="publicContent")return out_({ok:true,success:true,content:publicContent_()});
+  return out_({ok:true,success:true,service:"Hope & Care Bangladesh API",version:"2.0.0",status:"online",submissionsEnabled:true,adminLoginEnabled:true,actions:["projects","content","adminLoginToken","getContent","saveContent"]});
 }
 function doPost(e){
   try{
-    const p=parse_(e),a=String(p.action||p.kind||"");
+    const p=parse_(e);
+    // Accept the field/action aliases used by the currently deployed admin client.
+    let a=String(p.action||p.kind||p.formType||p.form_type||p.type||"");
+    const aliases={admin_login:"adminLoginToken",adminLogin:"adminLoginToken",login:"adminLoginToken",get_content:"getContent",save_content:"saveContent",admin_projects:"adminProjects",create_project:"createProject",update_project:"updateProject",delete_project:"deleteProject",contact_form:"contact",volunteer_form:"volunteer"};
+    a=aliases[a]||a;
     if(a==="contact"||a==="volunteer")return savePublicForm_(p,a);
     if(a==="adminLogin")return login_(p);
     if(a==="adminLoginToken")return loginWithAdminToken_(p);
-    if(a==="adminProjects"){auth_(p);return out_({ok:true,projects:allProjects_()})}
-    if(a==="createProject"){auth_(p);return out_({ok:true,project:writeProject_(p,false)})}
-    if(a==="updateProject"){auth_(p);return out_({ok:true,project:writeProject_(p,true)})}
-    if(a==="deleteProject"){auth_(p);deleteProject_(p.id);return out_({ok:true})}
-    if(a==="getContent"){auth_(p);return out_({ok:true,content:allContent_()})}
-    if(a==="saveContent"){auth_(p);return out_({ok:true,content:saveContent_(p.content||{})})}
-    if(a==="uploadFile"){auth_(p);return out_({ok:true,file:uploadFile_(p)})}
+    if(a==="adminProjects"){auth_(p);return out_({ok:true,success:true,projects:allProjects_()})}
+    if(a==="createProject"){auth_(p);return out_({ok:true,success:true,project:writeProject_(p,false)})}
+    if(a==="updateProject"){auth_(p);return out_({ok:true,success:true,project:writeProject_(p,true)})}
+    if(a==="deleteProject"){auth_(p);deleteProject_(p.id);return out_({ok:true,success:true})}
+    if(a==="getContent"){auth_(p);return out_({ok:true,success:true,content:allContent_()})}
+    if(a==="saveContent"){auth_(p);return out_({ok:true,success:true,content:saveContent_(p.content||{})})}
+    if(a==="uploadFile"){auth_(p);return out_({ok:true,success:true,file:uploadFile_(p)})}
     throw Error("Unknown action");
-  }catch(err){return out_({ok:false,error:String(err&&err.message||err)})}
+  }catch(err){return out_({ok:false,success:false,error:String(err&&err.message||err),message:String(err&&err.message||err)})}
 }
 function parse_(e){if(e&&e.postData&&e.postData.contents){try{return JSON.parse(e.postData.contents)}catch(_){}}return (e&&e.parameter)||{}}
 function login_(p){
@@ -56,7 +60,7 @@ function login_(p){
   if(claims.email.toLowerCase()!==ADMIN_EMAIL.toLowerCase())throw Error("This Google account is not authorized for the admin panel.");
   const token=Utilities.getUuid()+Utilities.getUuid(),expires=Date.now()+21600000;
   ss_().getSheetByName(TAB.sessions).appendRow([hash_(token),claims.email,expires]);
-  return out_({ok:true,email:claims.email,token,expiresAt:expires});
+  return out_({ok:true,success:true,email:claims.email,token,expiresAt:expires});
 }
 
 function loginWithAdminToken_(p){
@@ -66,7 +70,7 @@ function loginWithAdminToken_(p){
   if(!supplied || supplied.length<16 || !constantTimeEquals_(supplied,expected))throw Error("Invalid Apps Script Token Value.");
   const token=Utilities.getUuid()+Utilities.getUuid(),expires=Date.now()+21600000;
   ss_().getSheetByName(TAB.sessions).appendRow([hash_(token),ADMIN_EMAIL,expires]);
-  return out_({ok:true,email:ADMIN_EMAIL,token,expiresAt:expires});
+  return out_({ok:true,success:true,email:ADMIN_EMAIL,token,expiresAt:expires});
 }
 function constantTimeEquals_(a,b){
   a=String(a);b=String(b);if(a.length!==b.length)return false;let diff=0;for(let i=0;i<a.length;i++)diff|=a.charCodeAt(i)^b.charCodeAt(i);return diff===0;
@@ -97,9 +101,16 @@ function auth_(p){
 function savePublicForm_(p,kind){
   const name=clean_(p.name,100),email=clean_(p.email,150),msg=clean_(p.message,3000);
   if(!name||!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email))throw Error("Please provide a valid name and email.");
-  if(kind==="contact")ss_().getSheetByName(TAB.contacts).appendRow([new Date(),name,email,clean_(p.subject,160),msg,clean_(p.language,10),clean_(p.page,500)]);
-  else ss_().getSheetByName(TAB.volunteers).appendRow([new Date(),name,email,clean_(p.phone,40),clean_(p.interest,120),msg,clean_(p.language,10),clean_(p.page,500)]);
-  return out_({ok:true});
+  if(kind==="contact") {
+    ss_().getSheetByName(TAB.contacts).appendRow([new Date(),name,email,clean_(p.subject,160),msg,clean_(p.language,10),clean_(p.page,500)]);
+    try { MailApp.sendEmail(ADMIN_EMAIL,"Website contact message: "+clean_(p.subject,160),"Name: "+name+"\nEmail: "+email+"\nSubject: "+clean_(p.subject,160)+"\n\n"+msg); } catch(mailErr) { console.error("Contact notification email failed: "+mailErr); }
+  } else {
+    const phone=clean_(p.phone,40),interest=clean_(p.interest,120);
+    ss_().getSheetByName(TAB.volunteers).appendRow([new Date(),name,email,phone,interest,msg,clean_(p.language,10),clean_(p.page,500)]);
+    try { MailApp.sendEmail(ADMIN_EMAIL,"New volunteer application — "+name,"A new volunteer application was received.\n\nName: "+name+"\nEmail: "+email+"\nPhone: "+phone+"\nInterest: "+interest+"\nMessage: "+msg); } catch(mailErr) { console.error("Volunteer admin notification failed: "+mailErr); }
+    try { MailApp.sendEmail(email,"Thank you for volunteering with Hope & Care Bangladesh","Dear "+name+",\n\nThank you for your interest in volunteering with Hope & Care Bangladesh. We have received your application and our team will review it.\n\nWith gratitude,\nHope & Care Bangladesh"); } catch(mailErr) { console.error("Volunteer confirmation email failed: "+mailErr); }
+  }
+  return out_({ok:true,success:true});
 }
 function writeProject_(p,updating){
   const title=clean_(p.title,140),description=clean_(p.description,1200);if(!title||!description)throw Error("Title and description are required.");
@@ -145,9 +156,12 @@ function seedContent_(ss){
 
 function saveContent_(obj){
   const allowed=["heroTitle","heroCopy","aboutText","missionText","visionText","valuesText","activitiesIntro","projectsIntro","contactEmail","logoUrl","bannerUrl"];
+  // Page content keys use page:<filename>:<field>; only known website pages are accepted.
+  const pageFiles=["index.html","about.html","programs.html","projects.html","impact.html","gallery.html","news.html","contact.html","donate.html","reports.html","team.html","volunteer.html","privacy.html"];
+  Object.keys(obj||{}).forEach(k=>{if(/^page:[a-z0-9-]+\.html:(?:text|en|bn):\d+$/.test(k)){const page=k.split(":")[1];if(pageFiles.includes(page))allowed.push(k);}});
   const s=ss_().getSheetByName(TAB.content),rows=s.getDataRange().getValues(),map={};
   for(let i=1;i<rows.length;i++)map[String(rows[i][0])]=i+1;
-  allowed.forEach(k=>{if(obj[k]!==undefined){const v=clean_(obj[k],k==="aboutText"?1500:1000);if(k==="contactEmail"&&v&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))throw Error("Contact email is invalid.");if((k==="logoUrl"||k==="bannerUrl")&&v&&!/^https:\/\//i.test(v))throw Error("Image URLs must start with https://");const row=[k,v,new Date()];if(map[k])s.getRange(map[k],1,1,3).setValues([row]);else s.appendRow(row);}});
+  allowed.forEach(k=>{if(obj[k]!==undefined){const v=clean_(obj[k],k==="aboutText"?1500:(k.startsWith("page:")?3000:1000));if(k==="contactEmail"&&v&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))throw Error("Contact email is invalid.");if((k==="logoUrl"||k==="bannerUrl")&&v&&!/^https:\/\//i.test(v))throw Error("Image URLs must start with https://");const row=[k,v,new Date()];if(map[k])s.getRange(map[k],1,1,3).setValues([row]);else s.appendRow(row);}});
   return allContent_();
 }
 function allContent_(){const rows=ss_().getSheetByName(TAB.content).getDataRange().getValues(),o={};rows.slice(1).forEach(r=>{if(r[0])o[String(r[0])]=String(r[1]||"")});return o;}

@@ -37,6 +37,7 @@ button{font:inherit;cursor:pointer}.primary{background:var(--green,#21764f);colo
     <div class="nav-list">
       <button class="nav-btn active" data-view="contentView">Website content</button>
       <button class="nav-btn" data-view="projectsView">Projects</button>
+      <button class="nav-btn" data-view="pagesView">All page content</button>
     </div>
     <div class="sidebar-bottom">Private administrator workspace<br><span id="sessionStatus">Session active</span></div>
   </aside>
@@ -69,6 +70,13 @@ button{font:inherit;cursor:pointer}.primary{background:var(--green,#21764f);colo
         <div class="actions"><button class="primary" type="submit">Save project</button><button class="secondary" id="clearProject" type="button">Clear</button></div>
       </form><div id="projectStatusMessage" class="status hidden" role="status"></div></div>
       <div class="panel"><div class="topbar"><h2 style="margin:0">Saved projects</h2><button class="secondary" id="reloadProjects" type="button">Refresh</button></div><div id="projectsList"><p class="muted">Loading projects…</p></div></div>
+    </section>
+
+    <section id="pagesView" class="view hidden">
+      <div class="panel"><h2>Edit website pages</h2><p class="muted">Choose a page to load its main headings, paragraphs, list items and buttons. Saved values are stored in the Website content Google Sheet and displayed on the public page.</p>
+        <div class="field-grid"><div class="field"><label for="cmsPageSelect">Website page</label><select id="cmsPageSelect"><option value="index.html">Home</option><option value="about.html">About Us</option><option value="programs.html">Our Programs</option><option value="projects.html">Projects</option><option value="impact.html">Our Impact</option><option value="gallery.html">Gallery</option><option value="news.html">News &amp; Events</option><option value="contact.html">Contact</option><option value="donate.html">Donate</option><option value="reports.html">Reports</option><option value="team.html">Team</option><option value="volunteer.html">Volunteer</option><option value="privacy.html">Privacy</option></select></div><div class="field" style="display:flex;align-items:end"><button class="secondary" id="loadCmsPage" type="button">Load page fields</button></div></div>
+        <form id="pageContentForm"><div id="pageContentFields"><p class="muted">Select a page and click “Load page fields”.</p></div><div class="actions"><button class="primary" type="submit">Save page content</button></div></form><div id="pageContentStatus" class="status hidden" role="status"></div>
+      </div>
     </section>
   </main>
 </div>

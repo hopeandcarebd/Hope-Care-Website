@@ -64,7 +64,7 @@
   function switchView(viewId) {
     document.querySelectorAll(".view").forEach(v => v.classList.toggle("hidden", v.id !== viewId));
     document.querySelectorAll("[data-view]").forEach(b => b.classList.toggle("active", b.dataset.view === viewId));
-    $("pageTitle").textContent = viewId === "projectsView" ? "Projects" : "Website content";
+    $("pageTitle").textContent = viewId === "projectsView" ? "Projects" : (viewId === "pagesView" ? "All page content" : "Website content");
   }
 
   $("loginForm").addEventListener("submit", async function (event) {
@@ -77,9 +77,8 @@
     try {
       // Exact action and field expected by this project's Code.gs.
       const result = await api("adminLoginToken", { adminToken: adminToken }, true);
-      const sessionToken = result.sessionToken || result.token;
-      if (!sessionToken) throw new Error("Login response did not contain a session token.");
-      token = sessionToken;
+      if (!result.token) throw new Error("Login response did not contain a session token. Check Apps Script deployment version.");
+      token = result.token;
       sessionStorage.setItem("hc-admin-token", token);
       $("adminToken").value = "";
       showDashboard();
@@ -234,6 +233,52 @@
     });
   }
   $("reloadProjects").addEventListener("click", loadProjects);
+
+
+  const CMS_PAGES = ["index.html","about.html","programs.html","projects.html","impact.html","gallery.html","news.html","contact.html","donate.html","reports.html","team.html","volunteer.html","privacy.html"];
+  let pageFields = [];
+  function pageTargetList(doc) {
+    return Array.from(doc.querySelectorAll("main h1,main h2,main h3,main h4,main p,main li,main button")).filter(el => !el.querySelector("*"));
+  }
+  function fieldLabel(el, index) {
+    const text = (el.getAttribute("data-en") || el.textContent || "").trim().replace(/\s+/g, " ");
+    return (el.tagName.toLowerCase() + " · " + (text.slice(0, 72) || ("Item " + (index + 1))));
+  }
+  async function loadCmsPage() {
+    hideStatus("pageContentStatus");
+    const page = $("cmsPageSelect").value;
+    const root = $("pageContentFields"); root.replaceChildren(); pageFields = [];
+    try {
+      const response = await fetch("../" + page, { cache: "no-store" });
+      if (!response.ok) throw new Error("Could not load " + page + " (HTTP " + response.status + ").");
+      const html = await response.text();
+      const doc = new DOMParser().parseFromString(html, "text/html");
+      const targets = pageTargetList(doc);
+      if (!targets.length) throw new Error("No editable main content was found on this page.");
+      targets.forEach((el, i) => {
+        const multilingual = el.hasAttribute("data-en") || el.hasAttribute("data-bn");
+        const values = multilingual ? [
+          { key: "page:" + page + ":en:" + i, label: fieldLabel(el, i) + " — English", value: el.getAttribute("data-en") || el.textContent.trim() },
+          { key: "page:" + page + ":bn:" + i, label: fieldLabel(el, i) + " — বাংলা", value: el.getAttribute("data-bn") || "" }
+        ] : [{ key: "page:" + page + ":text:" + i, label: fieldLabel(el, i), value: el.textContent.trim() }];
+        values.forEach(item => {
+          const wrap = document.createElement("div"); wrap.className = "field";
+          const label = document.createElement("label"); label.textContent = item.label; label.htmlFor = "cms-" + pageFields.length;
+          const input = item.value.length > 100 || item.value.includes("\n") ? document.createElement("textarea") : document.createElement("input");
+          input.id = label.htmlFor; input.value = item.value; input.maxLength = 3000; input.dataset.cmsKey = item.key;
+          wrap.append(label, input); root.appendChild(wrap); pageFields.push(input);
+        });
+      });
+      showStatus("pageContentStatus", "Loaded " + targets.length + " editable items from " + page + ".", true);
+    } catch (err) { showStatus("pageContentStatus", err.message, false); }
+  }
+  $("loadCmsPage").addEventListener("click", loadCmsPage);
+  $("pageContentForm").addEventListener("submit", async function (event) {
+    event.preventDefault(); hideStatus("pageContentStatus");
+    const content = {}; pageFields.forEach(input => { content[input.dataset.cmsKey] = input.value.trim(); });
+    try { await api("saveContent", { content }); showStatus("pageContentStatus", "Page content saved to Google Sheets. Refresh the public page to see changes.", true); }
+    catch (err) { showStatus("pageContentStatus", "Could not save page content: " + err.message, false); if (/session expired|session missing|unauthorized/i.test(err.message)) expireSession(err.message); }
+  });
 
   function expireSession(message) {
     token = "";

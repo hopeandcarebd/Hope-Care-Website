@@ -38,15 +38,15 @@
      * and a real website submission has been tested.
      */
     forms: {
-      contactEnabled: false,
-      volunteerEnabled: false
+      contactEnabled: true,
+      volunteerEnabled: true
     },
 
     /*
      * Admin access is not implemented by this public config.
      */
     admin: {
-      enabled: false
+      enabled: true
     }
   };
 
