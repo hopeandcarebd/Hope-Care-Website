@@ -33,12 +33,9 @@
         "https://script.google.com/macros/s/AKfycbwvQm4jnvYD10pJRQJ3YbuglcyAGx_v3VQT9eoJc589x1cyqc_Zbdr5l5LGdQIdHK2WKg/exec"
     },
 
-    /*
-     * Keep forms disabled until form-handler.js is configured
-     * and a real website submission has been tested.
-     */
+    /* Contact remains disabled until its own end-to-end test. Volunteer applications are enabled. */
     forms: {
-      contactEnabled: true,
+      contactEnabled: false,
       volunteerEnabled: true
     },
 
@@ -46,7 +43,7 @@
      * Admin access is not implemented by this public config.
      */
     admin: {
-      enabled: true
+      enabled: false
     }
   };
 
