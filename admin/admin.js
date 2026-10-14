@@ -77,8 +77,9 @@
     try {
       // Exact action and field expected by this project's Code.gs.
       const result = await api("adminLoginToken", { adminToken: adminToken }, true);
-      if (!result.token) throw new Error("Login response did not contain a session token. Check Apps Script deployment version.");
-      token = result.token;
+      const sessionToken = result.sessionToken || result.token;
+      if (!sessionToken) throw new Error("Login response did not contain a session token.");
+      token = sessionToken;
       sessionStorage.setItem("hc-admin-token", token);
       $("adminToken").value = "";
       showDashboard();
