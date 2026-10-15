@@ -1677,3 +1677,19 @@ button[type=submit] { cursor:pointer; border:0; }
 .live-project-card .live-project-card-body p { overflow-wrap:anywhere; white-space:pre-line; }
 @media (max-width: 850px) { .live-project-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 @media (max-width: 560px) { .live-project-grid { grid-template-columns: 1fr; } .live-project-image { height: 190px; } }
+
+
+/* Dynamic project cards: show every uploaded photo without cropping or distortion. */
+.hc-project-card.live-project-full-card{overflow:hidden;display:flex;flex-direction:column;height:100%}
+.hc-project-images{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,220px),1fr));gap:10px;padding:12px 12px 0;align-items:start}
+.hc-project-images img{display:block;width:100%;height:auto;max-height:none;object-fit:contain;aspect-ratio:auto;background:#f5f7f5;border-radius:8px}
+.hc-project-card-body{padding:18px}
+.hc-project-full-description{white-space:normal;overflow-wrap:anywhere;line-height:1.75;margin:12px 0 16px;color:inherit}
+.live-project-status{display:inline-block;margin-top:8px;padding:4px 9px;border-radius:999px;background:#e7f4e9;color:#245c3c;font-size:.82rem;font-weight:700}
+.live-featured-projects .live-project-grid{grid-template-columns:1fr}
+.live-featured-projects .hc-project-images{grid-template-columns:repeat(auto-fit,minmax(min(100%,260px),1fr))}
+@media(max-width:640px){.hc-project-images{grid-template-columns:1fr}.live-featured-projects .hc-project-images{grid-template-columns:1fr}}
+
+/* Full project information is easier to read in a single wide card. */
+#live-project-grid{grid-template-columns:1fr}
+#live-project-grid .hc-project-images{grid-template-columns:repeat(auto-fit,minmax(min(100%,240px),1fr))}

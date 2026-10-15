@@ -135,43 +135,66 @@
     $("projectStatus").value = "draft";
     $("projectFeatured").checked = false;
     $("projectImageFile").value = "";
-    $("projectImagePreview").classList.add("hidden");
+    if ($("projectTitleBn")) $("projectTitleBn").value = "";
+    if ($("projectDescriptionBn")) $("projectDescriptionBn").value = "";
+    if ($("projectImageUrls")) $("projectImageUrls").value = "";
+    if ($("projectImagePreviews")) $("projectImagePreviews").replaceChildren();
     $("projectFormTitle").textContent = "Add project";
     hideStatus("projectStatusMessage");
   }
   $("clearProject").addEventListener("click", clearProject);
 
+  function projectImageList() {
+    const urls = ($("projectImageUrls").value || "").split(/\r?\n|,/).map(v => v.trim()).filter(v => /^https:\/\//i.test(v));
+    const cover = $("projectImage").value.trim();
+    if (cover && /^https:\/\//i.test(cover)) urls.unshift(cover);
+    return urls.filter((u, i, a) => a.indexOf(u) === i);
+  }
   function updateProjectImagePreview() {
-    const url = $("projectImage").value.trim();
-    const preview = $("projectImagePreview");
-    if (url && /^https:\/\//i.test(url)) { preview.src = url; preview.classList.remove("hidden"); }
-    else { preview.removeAttribute("src"); preview.classList.add("hidden"); }
+    const urls = projectImageList();
+    const root = $("projectImagePreviews");
+    if (!root) return;
+    root.replaceChildren();
+    urls.forEach(url => {
+      const img = document.createElement("img");
+      img.src = url; img.alt = "Project photo preview"; img.loading = "lazy";
+      img.onerror = () => img.remove();
+      root.appendChild(img);
+    });
   }
   $("projectImage").addEventListener("input", updateProjectImagePreview);
+  $("projectImageUrls").addEventListener("input", updateProjectImagePreview);
   $("projectImageFile").addEventListener("change", async function () {
-    const file = this.files && this.files[0];
-    if (!file) return;
+    const files = Array.from(this.files || []);
+    if (!files.length) return;
     const status = "projectImageUploadStatus";
     hideStatus(status);
-    if (!/^image\/(png|jpeg|webp|gif)$/i.test(file.type)) {
-      showStatus(status, "Choose a PNG, JPEG, WebP or GIF image.", false); this.value = ""; return;
+    const accepted = files.filter(file => /^image\/(png|jpeg|webp|gif)$/i.test(file.type) && file.size <= 4 * 1024 * 1024);
+    if (accepted.length !== files.length) {
+      showStatus(status, "Some files were skipped. Use PNG, JPEG, WebP or GIF images up to 4 MB each.", false);
     }
-    if (file.size > 4 * 1024 * 1024) {
-      showStatus(status, "Image must be 4 MB or smaller.", false); this.value = ""; return;
-    }
-    showStatus(status, "Uploading image to GitHub…", true);
+    const uploaded = [];
     try {
-      const dataUrl = await new Promise((resolve, reject) => {
-        const reader = new FileReader(); reader.onload = () => resolve(String(reader.result || "")); reader.onerror = () => reject(new Error("Could not read image file.")); reader.readAsDataURL(file);
-      });
-      const base64 = dataUrl.split(",")[1];
-      const result = await api("uploadProjectImage", { fileName: file.name, mimeType: file.type, base64: base64 });
-      if (!result.url) throw new Error("GitHub upload response did not include an image URL.");
-      $("projectImage").value = result.url;
+      for (let i = 0; i < accepted.length; i++) {
+        const file = accepted[i];
+        showStatus(status, "Uploading photo " + (i + 1) + " of " + accepted.length + "…", true);
+        const dataUrl = await new Promise((resolve, reject) => {
+          const reader = new FileReader(); reader.onload = () => resolve(String(reader.result || "")); reader.onerror = () => reject(new Error("Could not read " + file.name)); reader.readAsDataURL(file);
+        });
+        const result = await api("uploadProjectImage", { fileName: file.name, mimeType: file.type, base64: dataUrl.split(",")[1] });
+        if (!result.url) throw new Error("Upload response did not include an image URL.");
+        uploaded.push(result.url);
+      }
+      const existing = ($("projectImageUrls").value || "").split(/\r?\n/).map(v => v.trim()).filter(Boolean);
+      const all = existing.concat(uploaded).filter((u, i, a) => a.indexOf(u) === i);
+      $("projectImageUrls").value = all.join("\n");
+      if (!$("projectImage").value.trim() && all.length) $("projectImage").value = all[0];
       updateProjectImagePreview();
-      showStatus(status, "Image uploaded to GitHub successfully.", true);
+      showStatus(status, uploaded.length + " photo(s) uploaded successfully.", true);
     } catch (err) {
       showStatus(status, "Image upload failed: " + err.message, false);
+    } finally {
+      this.value = "";
     }
   });
 
@@ -182,11 +205,20 @@
     const payload = {
       id: id,
       title: $("projectTitle").value.trim(),
+      titleEn: $("projectTitle").value.trim(),
+      titleBn: $("projectTitleBn").value.trim(),
       category: $("projectCategory").value.trim(),
+      categoryEn: $("projectCategory").value.trim(),
+      categoryBn: $("projectCategoryBn").value.trim(),
       location: $("projectLocation").value.trim(),
+      locationEn: $("projectLocation").value.trim(),
+      locationBn: $("projectLocationBn").value.trim(),
       status: $("projectStatus").value,
       description: $("projectDescription").value.trim(),
+      descriptionEn: $("projectDescription").value.trim(),
+      descriptionBn: $("projectDescriptionBn").value.trim(),
       imageUrl: $("projectImage").value.trim(),
+      imageUrls: projectImageList(),
       featured: $("projectFeatured").checked
     };
     try {
@@ -226,7 +258,7 @@
       row.className = "project-row";
       const info = document.createElement("div");
       const title = document.createElement("strong");
-      title.textContent = project.title || "(Untitled project)";
+      title.textContent = project.titleEn || project.title || "(Untitled project)";
       const badge = document.createElement("span");
       badge.className = "badge";
       badge.textContent = project.status || "draft";
@@ -242,12 +274,18 @@
       edit.textContent = "Edit";
       edit.addEventListener("click", () => {
         $("projectId").value = project.id || "";
-        $("projectTitle").value = project.title || "";
-        $("projectCategory").value = project.category || "";
-        $("projectLocation").value = project.location || "";
+        $("projectTitle").value = project.titleEn || project.title || "";
+        $("projectTitleBn").value = project.titleBn || "";
+        $("projectCategory").value = project.categoryEn || project.category || "";
+        $("projectCategoryBn").value = project.categoryBn || "";
+        $("projectLocation").value = project.locationEn || project.location || "";
+        $("projectLocationBn").value = project.locationBn || "";
         $("projectStatus").value = project.status || "draft";
-        $("projectDescription").value = project.description || "";
+        $("projectDescription").value = project.descriptionEn || project.description || "";
+        $("projectDescriptionBn").value = project.descriptionBn || "";
         $("projectImage").value = project.imageUrl || "";
+        $("projectImageUrls").value = (Array.isArray(project.imageUrls) ? project.imageUrls : (project.imageUrl ? [project.imageUrl] : [])).join("\n");
+        updateProjectImagePreview();
         $("projectFeatured").checked = project.featured === true || String(project.featured) === "true";
         updateProjectImagePreview();
         $("projectFormTitle").textContent = "Edit project";

@@ -26,6 +26,12 @@
       box-shadow: 0 8px 24px rgba(20, 70, 40, 0.06);
     }
 
+    .project-gallery-feed{margin:28px 0 42px}.project-gallery-feed h2{margin-bottom:8px}.project-gallery-feed>p{margin-bottom:18px}
+    .project-gallery-grid .gallery-card{display:flex;flex-direction:column}
+    .project-gallery-grid .gallery-card img{display:block;width:100%;height:auto;object-fit:contain;background:#f5f7f5}
+    .project-gallery-grid .gallery-card-content{padding:16px}
+    .project-gallery-grid .gallery-card-content h3{margin:0 0 6px;font-size:1rem}
+    .project-gallery-grid .gallery-card-content p{margin:0;color:var(--muted,#66766d);font-size:.9rem}
     .gallery-placeholder {
       aspect-ratio: 4 / 3;
       display: flex;
@@ -160,67 +166,11 @@
           </p>
         </div>
 
-        <div class="gallery-grid">
-
-          <article class="gallery-card">
-            <div class="gallery-placeholder">
-              <div>
-                <span aria-hidden="true">▧</span>
-                <strong data-en="Photo coming soon"
-                        data-bn="ছবি শিগগিরই যুক্ত হবে">
-                  Photo coming soon
-                </strong>
-              </div>
-            </div>
-            <div class="gallery-card-content">
-              <h3 data-en="Activities"
-                  data-bn="কার্যক্রম">Activities</h3>
-              <p data-en="Approved activity photographs will appear here."
-                 data-bn="অনুমোদিত কার্যক্রমের ছবি এখানে দেখানো হবে।">
-                Approved activity photographs will appear here.
-              </p>
-            </div>
-          </article>
-
-          <article class="gallery-card">
-            <div class="gallery-placeholder">
-              <div>
-                <span aria-hidden="true">▧</span>
-                <strong data-en="Photo coming soon"
-                        data-bn="ছবি শিগগিরই যুক্ত হবে">
-                  Photo coming soon
-                </strong>
-              </div>
-            </div>
-            <div class="gallery-card-content">
-              <h3 data-en="Projects" data-bn="প্রকল্প">Projects</h3>
-              <p data-en="Photographs from verified projects will be added here."
-                 data-bn="যাচাইকৃত প্রকল্পের ছবি এখানে যুক্ত করা হবে।">
-                Photographs from verified projects will be added here.
-              </p>
-            </div>
-          </article>
-
-          <article class="gallery-card">
-            <div class="gallery-placeholder">
-              <div>
-                <span aria-hidden="true">▧</span>
-                <strong data-en="Photo coming soon"
-                        data-bn="ছবি শিগগিরই যুক্ত হবে">
-                  Photo coming soon
-                </strong>
-              </div>
-            </div>
-            <div class="gallery-card-content">
-              <h3 data-en="Events" data-bn="অনুষ্ঠান">Events</h3>
-              <p data-en="Approved photographs from events will be displayed here."
-                 data-bn="অনুষ্ঠানের অনুমোদিত ছবি এখানে প্রদর্শিত হবে।">
-                Approved photographs from events will be displayed here.
-              </p>
-            </div>
-          </article>
-
-        </div>
+        <section class="project-gallery-feed" aria-labelledby="project-gallery-title">
+          <h2 id="project-gallery-title" data-en="Project photos" data-bn="প্রকল্পের ছবি">Project photos</h2>
+          <p data-en="Photos uploaded for published projects appear here automatically." data-bn="প্রকাশিত প্রকল্পে আপলোড করা ছবিগুলো স্বয়ংক্রিয়ভাবে এখানে দেখা যাবে।">Photos uploaded for published projects appear here automatically.</p>
+          <div class="gallery-grid project-gallery-grid" id="project-gallery-grid"><p class="gallery-feed-note" data-en="Loading project photos…" data-bn="প্রকল্পের ছবি লোড হচ্ছে…">Loading project photos…</p></div>
+        </section>
 
         <div class="gallery-note">
           <strong data-en="Privacy matters"
@@ -425,5 +375,6 @@
   </footer>
 <script src="assets/js/config.js"></script>
 <script src="assets/js/page-cms.js"></script>
+<script src="assets/js/project-gallery.js"></script>
 </body>
 </html>
