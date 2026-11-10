@@ -15,6 +15,7 @@
 button{font:inherit;cursor:pointer}.primary{background:var(--green,#21764f);color:#fff;border:0;border-radius:9px;padding:11px 15px;font-weight:750}.secondary{background:#e8f1ea;color:var(--green,#21764f);border:0;border-radius:9px;padding:10px 14px;font-weight:700}.danger{background:#a63737;color:#fff;border:0;border-radius:9px;padding:8px 11px}.wide{width:100%}.status{margin-top:12px;padding:11px 12px;border-radius:9px;white-space:pre-wrap}.status.hidden,.hidden{display:none!important}.field-grid{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:14px}.admin-shell{display:flex;min-height:100vh;width:100%}.sidebar{width:245px;flex-shrink:0;background:#fff;border-right:1px solid var(--line,#dce6df);padding:24px 16px;display:flex;flex-direction:column}.brand{display:flex;align-items:center;gap:10px;font-weight:800;text-decoration:none;color:var(--ink,#18352a)}.brand img{width:42px;height:42px;object-fit:contain}.nav-label{font-size:11px;color:var(--muted,#66766d);font-weight:800;letter-spacing:.12em;margin:32px 10px 10px}.nav-btn{display:block;width:100%;text-align:left;padding:11px 12px;border:0;border-radius:9px;background:transparent;color:var(--ink,#18352a);margin:2px 0}.nav-btn.active,.nav-btn:hover{background:#e8f4ec;color:var(--green,#21764f);font-weight:750}.sidebar-bottom{margin-top:auto;font-size:12px;color:var(--muted,#66766d);padding:18px 8px 0}.admin-main{padding:28px;max-width:1400px;width:100%;margin:auto}.topbar{display:flex;align-items:center;justify-content:space-between;gap:12px;margin-bottom:22px}.topbar h1{margin:0;font-size:26px}.panel{background:#fff;border:1px solid var(--line,#dce6df);border-radius:14px;padding:22px;margin:16px 0}.panel h2{margin-top:0}.actions{display:flex;gap:9px;flex-wrap:wrap;margin-top:14px}.project-row{display:flex;justify-content:space-between;gap:15px;align-items:flex-start;padding:14px 0;border-bottom:1px solid var(--line,#dce6df)}.project-row:last-child{border-bottom:0}.project-row p{margin:5px 0;color:var(--muted,#66766d);font-size:13px}.badge{display:inline-block;border-radius:20px;background:#e8f4ec;padding:3px 9px;font-size:12px}.muted{color:var(--muted,#66766d);font-size:13px}
 @media(max-width:760px){.admin-shell{display:block}.sidebar{width:100%;padding:14px}.sidebar .nav-label,.sidebar-bottom{display:none}.nav-list{display:flex;gap:5px;overflow:auto;margin-top:12px}.nav-btn{white-space:nowrap;width:auto}.admin-main{padding:14px}.field-grid{grid-template-columns:1fr}.panel{padding:16px}.topbar{align-items:flex-start}.login-card{padding:22px}}
 .project-image-previews{display:flex;flex-wrap:wrap;gap:10px;margin-top:10px}.project-image-previews img{max-width:140px;max-height:110px;width:auto;height:auto;object-fit:contain;border:1px solid var(--line,#dce6df);border-radius:8px;padding:3px}
+.builder-toolbar{display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:14px;background:#f2f6f8;border-radius:12px;margin:18px 0}.builder-toolbar label{font-weight:750}.builder-toolbar select{min-width:190px;padding:10px;border:1px solid var(--line);border-radius:8px}.builder-blocks{display:grid;gap:10px}.builder-block{display:flex;align-items:center;gap:12px;padding:14px;border:1px solid #d9e3e8;border-radius:12px;background:#fff}.builder-block.dragging{opacity:.45;border:2px dashed #1e6482}.builder-block .drag-handle{font-size:20px;color:#789;cursor:grab;user-select:none}.builder-block .block-meta{flex:1;min-width:0}.builder-block .block-meta strong{display:block}.builder-block .block-meta small{color:#6a7885}.builder-block .block-actions{display:flex;gap:6px;flex-wrap:wrap}.builder-block button{border:0;border-radius:7px;padding:8px 10px;background:#eaf1f5;color:#17324d}.builder-block button.delete{background:#fff0ee;color:#a33}.builder-block.selected{border-color:#1d6688;box-shadow:0 0 0 2px #1d668822}.builder-editor-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.builder-editor-grid .field{margin:8px 0}.builder-editor-grid textarea{min-height:90px}@media(max-width:760px){.builder-block{align-items:flex-start;flex-wrap:wrap}.builder-block .block-actions{width:100%}.builder-editor-grid{grid-template-columns:1fr}}
 </style>
 </head>
 <body>
@@ -37,6 +38,10 @@ button{font:inherit;cursor:pointer}.primary{background:var(--green,#21764f);colo
     <div class="nav-label">WORKSPACE</div>
     <div class="nav-list">
       <button class="nav-btn active" data-view="contentView">Website content</button>
+      <button class="nav-btn" data-view="designView">Design Studio</button>
+      <button class="nav-btn" data-view="layoutView">Page Layouts</button>
+      <button class="nav-btn" data-view="builderView">Drag &amp; Drop Builder</button>
+      <button class="nav-btn" data-view="settingsView">Site Settings</button>
       <button class="nav-btn" data-view="projectsView">Projects</button>
       <button class="nav-btn" data-view="teamView">Team Members</button>
       <button class="nav-btn" data-view="pagesView">All page content</button>
@@ -64,6 +69,53 @@ button{font:inherit;cursor:pointer}.primary{background:var(--green,#21764f);colo
       </div>
     </section>
 
+    <section id="designView" class="view hidden">
+      <div class="panel"><h2>Design Studio</h2><p class="muted">Control the website-wide visual identity. Changes are stored in Google Sheets and applied to public pages after refresh.</p>
+        <form id="designForm">
+          <div class="field-grid">
+            <div class="field"><label for="themePrimary">Primary brand colour</label><input id="themePrimary" type="color" value="#17324d"></div>
+            <div class="field"><label for="themeSecondary">Secondary colour</label><input id="themeSecondary" type="color" value="#245b78"></div>
+            <div class="field"><label for="themeAccent">Accent colour</label><input id="themeAccent" type="color" value="#e5ad32"></div>
+            <div class="field"><label for="themeText">Main text colour</label><input id="themeText" type="color" value="#243447"></div>
+          </div>
+          <div class="field-grid">
+            <div class="field"><label for="themeFont">Website font</label><select id="themeFont"><option value="Inter">Inter</option><option value="Arial">Arial</option><option value="Georgia">Georgia</option><option value="Noto Sans Bengali">Noto Sans Bengali</option></select></div>
+            <div class="field"><label for="themeContainer">Content width</label><select id="themeContainer"><option value="1080px">Compact</option><option value="1200px">Standard</option><option value="1320px">Wide</option><option value="1440px">Extra wide</option></select></div>
+            <div class="field"><label for="themeRadius">Card corner style</label><select id="themeRadius"><option value="8px">Sharp</option><option value="16px">Soft</option><option value="24px">Rounded</option></select></div>
+          </div>
+          <div class="field"><label for="customCss">Advanced custom CSS</label><textarea id="customCss" maxlength="12000" placeholder="/* Optional advanced styling. Example: .site-header { background: #fff; } */"></textarea><small class="muted">Only add CSS you understand. Invalid CSS may affect page appearance.</small></div>
+          <div class="actions"><button class="primary" type="submit">Save design settings</button><button class="secondary" id="reloadDesign" type="button">Reload</button></div>
+        </form><div id="designStatus" class="status hidden" role="status"></div>
+      </div>
+    </section>
+    <section id="layoutView" class="view hidden">
+      <div class="panel"><h2>Page Layout &amp; Section Manager</h2><p class="muted">Show or hide page sections and change their display order. The original content remains saved in the page; this only changes its presentation.</p>
+        <div class="field-grid"><div class="field"><label for="layoutPageSelect">Choose page</label><select id="layoutPageSelect"><option value="index.html">Home</option><option value="about.html">About Us</option><option value="programs.html">Our Programs</option><option value="projects.html">Projects</option><option value="impact.html">Our Impact</option><option value="gallery.html">Gallery</option><option value="news.html">News &amp; Events</option><option value="contact.html">Contact</option><option value="donate.html">Donate</option><option value="reports.html">Reports</option><option value="team.html">Team</option><option value="volunteer.html">Volunteer</option><option value="privacy.html">Privacy</option></select></div><div class="field" style="align-self:end"><button class="secondary" id="loadLayoutPage" type="button">Load sections</button></div></div>
+        <div id="layoutSections" class="records-list"><p class="muted">Choose a page and load its sections.</p></div>
+        <div class="actions"><button class="primary" id="saveLayout" type="button">Save page layout</button></div><div id="layoutStatus" class="status hidden" role="status"></div>
+      </div>
+    </section>
+    <section id="builderView" class="view hidden">
+      <div class="panel"><h2>Visual Page Builder</h2><p class="muted">Build page sections with drag-and-drop. Add, edit, duplicate, hide and remove blocks. Existing page sections remain intact; custom blocks are added to the selected page.</p>
+        <div class="field-grid"><div class="field"><label for="builderPageSelect">Choose page</label><select id="builderPageSelect"><option value="index.html">Home</option><option value="about.html">About Us</option><option value="programs.html">Our Programs</option><option value="projects.html">Projects</option><option value="impact.html">Our Impact</option><option value="gallery.html">Gallery</option><option value="news.html">News &amp; Events</option><option value="contact.html">Contact</option><option value="donate.html">Donate</option><option value="reports.html">Reports</option><option value="team.html">Team</option><option value="volunteer.html">Volunteer</option></select></div><div class="field" style="align-self:end"><button class="secondary" id="loadBuilder" type="button">Load page builder</button></div></div>
+        <div class="builder-toolbar"><label for="builderBlockType">Add a section</label><select id="builderBlockType"><option value="text">Text / Story</option><option value="image">Image Feature</option><option value="cta">Call to Action</option><option value="stats">Impact Statistics</option><option value="features">Three Feature Cards</option></select><button class="primary" id="addBuilderBlock" type="button">＋ Add section</button></div>
+        <div id="builderBlocks" class="builder-blocks"><p class="muted">Choose a page and load its sections.</p></div>
+        <div class="actions"><button class="primary" id="saveBuilder" type="button">Save page builder</button><button class="secondary" id="previewBuilder" type="button">Preview page ↗</button></div><div id="builderStatus" class="status hidden" role="status"></div>
+      </div>
+      <div class="panel" id="builderEditorPanel"><h2>Edit selected section</h2><p class="muted">Select a section above to edit its content.</p><div id="builderEditor" class="muted">No section selected.</div></div>
+    </section>
+    <section id="settingsView" class="view hidden">
+      <div class="panel"><h2>Global Site Settings</h2><p class="muted">Manage your organization identity and key contact details used across the website.</p>
+        <form id="settingsForm">
+          <div class="field-grid"><div class="field"><label for="siteName">Organization name</label><input id="siteName" maxlength="120"></div><div class="field"><label for="siteTagline">Tagline</label><input id="siteTagline" maxlength="180"></div></div>
+          <div class="field-grid"><div class="field"><label for="contactEmailGlobal">Public email</label><input id="contactEmailGlobal" type="email"></div><div class="field"><label for="contactPhone">Public phone</label><input id="contactPhone" maxlength="80"></div></div>
+          <div class="field"><label for="officeAddress">Office address</label><textarea id="officeAddress" maxlength="1000"></textarea></div>
+          <div class="field"><label for="footerText">Footer organization description</label><textarea id="footerText" maxlength="1000"></textarea></div>
+          <div class="field-grid"><div class="field"><label for="socialFacebook">Facebook URL</label><input id="socialFacebook" type="url"></div><div class="field"><label for="socialInstagram">Instagram URL</label><input id="socialInstagram" type="url"></div><div class="field"><label for="socialYoutube">YouTube URL</label><input id="socialYoutube" type="url"></div><div class="field"><label for="socialLinkedin">LinkedIn URL</label><input id="socialLinkedin" type="url"></div></div>
+          <div class="actions"><button class="primary" type="submit">Save site settings</button><button class="secondary" id="reloadSettings" type="button">Reload</button></div>
+        </form><div id="settingsStatus" class="status hidden" role="status"></div>
+      </div>
+    </section>
     <section id="teamView" class="view hidden">
       <div class="panel"><h2 id="teamFormTitle">Add team member</h2><form id="teamForm"><input id="teamId" type="hidden">
         <div class="field-grid"><div class="field"><label for="teamName">Full name *</label><input id="teamName" maxlength="140" required></div><div class="field"><label for="teamRole">Position / role *</label><input id="teamRole" maxlength="140" required></div></div>
