@@ -1,28 +1,38 @@
-# Google Apps Script setup — Hope & Care Bangladesh
+# Hope & Care Bangladesh — updated website backend deployment
 
-This backend is prepared for About-page editing and Team CRUD. It has **not** been deployed to your Google account by this ZIP; you must deploy it yourself because deployment and password setup require your account authorization.
+This release uses the same Google Apps Script backend source at `apps-script/Code.gs` and `google-apps-script/Code.gs`. Deploy this updated source to the existing Apps Script project connected to the website endpoint.
 
-## 1. Update the existing Apps Script project
-1. Open the Apps Script project associated with your existing `/exec` URL.
-2. Replace the project code with `Code.gs` from this folder. If your existing project has other scripts/triggers, back them up and review before replacing.
-3. Save the project.
-4. In the function dropdown, select `setupStorage` and click **Run**. Approve Google permissions. It creates a spreadsheet and stores its ID in Script Properties. Check **Execution log** for the spreadsheet URL.
-5. Select `setAdminPassword` and click Run only after adding a one-time password argument in the editor, e.g. `function initializeAdminPasswordOnce(){ setAdminPassword('REPLACE-WITH-A-UNIQUE-16-PLUS-CHARACTER-PASSWORD'); }`. Run that helper once, then delete the helper and save. Never put the password in website files or share it in chat.
-6. Deploy → Manage deployments → Edit the existing Web app deployment → choose **New version** → Execute as **Me**. Set access to **Anyone** only if you intend the public website to use this endpoint. Save/deploy and authorize if asked. Keep the `/exec` URL unchanged where possible.
+## What the updated backend adds
+- Existing Google Sheets storage for website content, projects, messages, volunteers and media.
+- A Team members sheet with authenticated create, read, update and delete actions.
+- Public read-only endpoint for published team profiles.
+- Website-wide design settings, global organization settings and custom CSS saved in the Website content sheet.
+- Existing admin token authentication and session validation remain in place.
 
-## 2. Deploy the website
-Upload the full website files, including `admin/`, `assets/js/config.js`, and `google-apps-script/Code.gs` to your GitHub Pages repository. The admin page is `/admin/`.
+## Deployment steps
+1. Open the Google Apps Script project currently used by the website's `/exec` endpoint.
+2. Back up its current source, then replace the project code with `apps-script/Code.gs` from this package.
+3. Save. Run `setup()` once from the Apps Script editor and approve the requested Google permissions. The setup function reuses the existing spreadsheet ID in Script Properties and creates the new Team members tab if it is missing.
+4. In Project Settings → Script Properties, confirm `ADMIN_TOKEN` is set to a strong secret of at least 16 characters. Do not put this token in website files or share it in chat. The existing `GOOGLE_CLIENT_ID` property can remain if legacy Google login is used.
+5. Deploy → Manage deployments → Edit the existing Web app deployment → select **New version**. Keep the existing deployment URL where possible and use the same access policy as the current public website endpoint.
+6. Upload the complete website folder to the same hosting location (for example, the GitHub Pages repository). Do not upload only selected HTML files; include the new CSS and JavaScript assets.
 
-## 3. Smoke tests
-- Open the `/exec` URL: JSON should show status `ready`.
-- Open `/exec?action=publicContent`: should return JSON with content and visible team members.
-- Sign in at `/admin/`; save a harmless About text edit; confirm it persists after reload.
-- Add a test team member, confirm it appears in the public About/Team section, then delete the test member.
+## Smoke tests
+- Open the existing `/exec` endpoint and confirm the service responds.
+- Open `/exec?action=content` and confirm it returns public website content.
+- Open `/exec?action=team` and confirm it returns published team profiles (an empty list is normal before profiles are published).
+- Sign in at `/admin/`, save a test colour setting, refresh a public page, and confirm the colour change appears.
+- Add a test team member in Admin → Team Members, publish it, confirm it appears in the Team page, then delete the test record.
+- Test project image upload, contact form and volunteer form after deployment.
 
-## Security and limitations
-- Admin password hash and spreadsheet ID are stored in Apps Script Script Properties; the password is never stored in website JS.
-- Login tokens expire after 30 minutes and are held in Apps Script cache. A cache eviction requires logging in again.
-- The Apps Script web app endpoint is public for public reads; write actions require a valid short-lived session token.
-- Browser fetch/CORS behavior depends on the Google Apps Script deployment. Test the admin sign-in after deployment. If the browser reports CORS/redirect errors, the endpoint needs a compatible proxy or a same-origin deployment strategy before live admin edits can work.
-- `setupStorage()` creates a new spreadsheet the first time. If you already have a production sheet, adapt `HC_SPREADSHEET_ID` in Script Properties to that sheet and ensure it has the three expected tabs/headers before using it.
-- Contact/volunteer submissions are stored by `submitForm` only when wired from the public forms. This package does not automatically enable those forms.
+## Important notes
+- The admin panel requires the backend deployment to be updated before the new design/site settings and Team Members CRUD will work.
+- The website's existing Apps Script endpoint is configured in `assets/js/config.js`; retain it unless you intentionally migrate the backend.
+- Public content and published team records are read-only. All write operations require a valid authenticated admin session.
+- Google Apps Script deployment permissions and Google Drive sharing policies are controlled by the organization's Google account. Test public image URLs and form delivery after deployment.
+- Keep a backup of the old Apps Script code and spreadsheet before production deployment.
+
+## Visual Page Builder (new)
+After uploading the latest `apps-script/Code.gs` and deploying a new Web App version, open Admin → Drag & Drop Builder. Select a page, load its saved sections, then add Text/Story, Image Feature, Call to Action, Impact Statistics or Three Feature Cards blocks. Drag blocks to reorder; use Edit, Duplicate, Hide/Show and Delete as needed. Save the builder to store the configuration in the existing Website Content sheet. Public pages load the saved blocks automatically through `assets/js/page-cms.js`.
+
+Existing built-in page sections can be reordered and hidden under Admin → Page Layouts (drag the rows to reorder). Builder-created blocks are managed separately in Drag & Drop Builder. Keep a backup of the Google Sheet and website folder before deployment.

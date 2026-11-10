@@ -9,7 +9,7 @@
  * links; if setSharing(ANYONE_WITH_LINK) is blocked, use a different public media strategy.
  */
 const ADMIN_EMAIL = "hopeandcarebd@gmail.com";
-const TAB = {projects:"Projects",contacts:"Contact messages",volunteers:"Volunteer applications",sessions:"Admin sessions",content:"Website content",media:"Media"};
+const TAB = {projects:"Projects",contacts:"Contact messages",volunteers:"Volunteer applications",sessions:"Admin sessions",content:"Website content",media:"Media",team:"Team members"};
 const MAX_UPLOAD_BYTES = 5 * 1024 * 1024;
 
 function setup() {
@@ -23,6 +23,7 @@ function setup() {
   ensure_(ss,TAB.sessions,["tokenHash","email","expiresAt"]);
   ensure_(ss,TAB.content,["key","value","updatedAt"]);
   ensure_(ss,TAB.media,["id","name","mimeType","url","driveFileId","description","createdAt"]);
+  ensure_(ss,TAB.team,["id","name","role","bio","photoUrl","status","sortOrder","createdAt","updatedAt"]);
   seedContent_(ss);
   let fid=props.getProperty("DRIVE_FOLDER_ID");
   if(!fid)fid=DriveApp.createFolder("Hope & Care Bangladesh — Website Files").getId();
@@ -33,6 +34,7 @@ function doGet(e){
   const action=String((e&&e.parameter&&e.parameter.action)||"");
   if(action==="projects")return out_({ok:true,success:true,projects:publicProjects_()});
   if(action==="content"||action==="publicContent")return out_({ok:true,success:true,content:publicContent_()});
+  if(action==="team")return out_({ok:true,success:true,team:publicTeam_()});
   return out_({ok:true,success:true,service:"Hope & Care Bangladesh API",version:"2.0.0",status:"online",submissionsEnabled:true,adminLoginEnabled:true,actions:["projects","content","adminLoginToken","getContent","saveContent"]});
 }
 function doPost(e){
@@ -40,11 +42,15 @@ function doPost(e){
     const p=parse_(e);
     // Accept the field/action aliases used by the currently deployed admin client.
     let a=String(p.action||p.kind||p.formType||p.form_type||p.type||"");
-    const aliases={admin_login:"adminLoginToken",adminLogin:"adminLoginToken",login:"adminLoginToken",get_content:"getContent",save_content:"saveContent",admin_projects:"adminProjects",create_project:"createProject",update_project:"updateProject",delete_project:"deleteProject",contact_form:"contact",volunteer_form:"volunteer"};
+    const aliases={uploadProjectImage:"uploadFile",admin_login:"adminLoginToken",adminLogin:"adminLoginToken",login:"adminLoginToken",get_content:"getContent",save_content:"saveContent",admin_projects:"adminProjects",create_project:"createProject",update_project:"updateProject",delete_project:"deleteProject",contact_form:"contact",volunteer_form:"volunteer"};
     a=aliases[a]||a;
     if(a==="contact"||a==="volunteer")return savePublicForm_(p,a);
     if(a==="adminLogin")return login_(p);
     if(a==="adminLoginToken")return loginWithAdminToken_(p);
+    if(a==="adminTeamMembers"){auth_(p);return out_({ok:true,success:true,team:allTeam_()})}
+    if(a==="createTeamMember"){auth_(p);return out_({ok:true,success:true,teamMember:writeTeamMember_(p,false)})}
+    if(a==="updateTeamMember"){auth_(p);return out_({ok:true,success:true,teamMember:writeTeamMember_(p,true)})}
+    if(a==="deleteTeamMember"){auth_(p);deleteTeamMember_(p.id);return out_({ok:true,success:true})}
     if(a==="adminProjects"){auth_(p);return out_({ok:true,success:true,projects:allProjects_()})}
     if(a==="createProject"){auth_(p);return out_({ok:true,success:true,project:writeProject_(p,false)})}
     if(a==="updateProject"){auth_(p);return out_({ok:true,success:true,project:writeProject_(p,true)})}
@@ -171,7 +177,7 @@ function seedContent_(ss){
     valuesText:"We listen first, act transparently, and build solutions with communities—not just for them.",
     activitiesIntro:"Our activities respond to local needs and grow through participation, volunteer time, and trusted partnerships.",
     projectsIntro:"Explore initiatives we’re building with communities. Published projects can be managed in the admin workspace.",
-    contactEmail:ADMIN_EMAIL,logoUrl:"",bannerUrl:""
+    contactEmail:ADMIN_EMAIL,logoUrl:"",bannerUrl:"",themePrimary:"#17324d",themeSecondary:"#245b78",themeAccent:"#e5ad32",themeText:"#243447",themeFont:"Inter",themeContainer:"1200px",themeRadius:"16px",siteName:"Hope & Care Bangladesh",siteTagline:"Care • Dignity • Opportunity"
   };
   const sheet=ss.getSheetByName(TAB.content),rows=sheet.getDataRange().getValues(),existing={};
   for(let i=1;i<rows.length;i++)existing[String(rows[i][0])]=true;
@@ -179,17 +185,22 @@ function seedContent_(ss){
 }
 
 function saveContent_(obj){
-  const allowed=["heroTitle","heroCopy","aboutText","missionText","visionText","valuesText","activitiesIntro","projectsIntro","contactEmail","logoUrl","bannerUrl"];
+  const allowed=["heroTitle","heroCopy","aboutText","missionText","visionText","valuesText","activitiesIntro","projectsIntro","contactEmail","logoUrl","bannerUrl","themePrimary","themeSecondary","themeAccent","themeText","themeFont","themeContainer","themeRadius","customCss","siteName","siteTagline","contactEmailGlobal","contactPhone","officeAddress","footerText","socialFacebook","socialInstagram","socialYoutube","socialLinkedin"];
   // Page content keys use page:<filename>:<field>; only known website pages are accepted.
   const pageFiles=["index.html","about.html","programs.html","projects.html","impact.html","gallery.html","news.html","contact.html","donate.html","reports.html","team.html","volunteer.html","privacy.html"];
-  Object.keys(obj||{}).forEach(k=>{if(/^page:[a-z0-9-]+\.html:(?:text|en|bn):\d+$/.test(k)){const page=k.split(":")[1];if(pageFiles.includes(page))allowed.push(k);}});
+  Object.keys(obj||{}).forEach(k=>{if(/^page:[a-z0-9-]+\.html:(?:text|en|bn):\d+$/.test(k)){const page=k.split(":")[1];if(pageFiles.includes(page))allowed.push(k);}if(/^layout:[a-z0-9-]+\.html$/.test(k)){const page=k.split(":")[1];if(pageFiles.includes(page))allowed.push(k);}if(/^builder:[a-z0-9-]+\.html$/.test(k)){const page=k.split(":")[1];if(pageFiles.includes(page))allowed.push(k);}});
   const s=ss_().getSheetByName(TAB.content),rows=s.getDataRange().getValues(),map={};
   for(let i=1;i<rows.length;i++)map[String(rows[i][0])]=i+1;
-  allowed.forEach(k=>{if(obj[k]!==undefined){const v=clean_(obj[k],k==="aboutText"?1500:(k.startsWith("page:")?3000:1000));if(k==="contactEmail"&&v&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))throw Error("Contact email is invalid.");if((k==="logoUrl"||k==="bannerUrl")&&v&&!/^https:\/\//i.test(v))throw Error("Image URLs must start with https://");const row=[k,v,new Date()];if(map[k])s.getRange(map[k],1,1,3).setValues([row]);else s.appendRow(row);}});
+  allowed.forEach(k=>{if(obj[k]!==undefined){const v=clean_(obj[k],(k==="customCss"||k.startsWith("layout:"))?12000:(k.startsWith("builder:")?30000:(k==="aboutText"?1500:(k.startsWith("page:")?3000:1000))));if(k==="contactEmail"&&v&&!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(v))throw Error("Contact email is invalid.");if((k==="logoUrl"||k==="bannerUrl"||k.startsWith("social"))&&v&&!/^https:\/\//i.test(v))throw Error("URLs must start with https://");const row=[k,v,new Date()];if(map[k])s.getRange(map[k],1,1,3).setValues([row]);else s.appendRow(row);}});
   return allContent_();
 }
 function allContent_(){const rows=ss_().getSheetByName(TAB.content).getDataRange().getValues(),o={};rows.slice(1).forEach(r=>{if(r[0])o[String(r[0])]=String(r[1]||"")});return o;}
 function publicContent_(){return allContent_();}
+function teamObject_(r){return {id:String(r[0]),name:String(r[1]||""),role:String(r[2]||""),bio:String(r[3]||""),photoUrl:String(r[4]||""),status:String(r[5]||"draft"),sortOrder:Number(r[6])||0,createdAt:r[7] instanceof Date?r[7].toISOString():String(r[7]||""),updatedAt:r[8] instanceof Date?r[8].toISOString():String(r[8]||"")};}
+function allTeam_(){const sh=ss_().getSheetByName(TAB.team),rows=sh.getDataRange().getValues();return rows.slice(1).filter(r=>r[0]).map(teamObject_).sort((a,b)=>a.sortOrder-b.sortOrder||a.name.localeCompare(b.name));}
+function publicTeam_(){return allTeam_().filter(m=>m.status==="published");}
+function writeTeamMember_(p,updating){const id=updating?clean_(p.id,100):Utilities.getUuid(),name=clean_(p.name,140),role=clean_(p.role,140),bio=clean_(p.bio,2000),photo=clean_(p.photoUrl,1000),status=["draft","published"].includes(p.status)?p.status:"draft",order=Math.max(0,Math.min(9999,Number(p.sortOrder)||0));if(!name||!role)throw Error("Name and role are required.");if(photo&&!/^https:\/\//i.test(photo))throw Error("Photo URL must start with https://");const sh=ss_().getSheetByName(TAB.team),rows=sh.getDataRange().getValues();let row=-1;for(let i=1;i<rows.length;i++)if(String(rows[i][0])===id){row=i+1;break;}if(updating&&row<0)throw Error("Team member not found.");const created=row?rows[row-1][7]:new Date(),values=[id,name,role,bio,photo,status,order,created,new Date()];if(row)sh.getRange(row,1,1,values.length).setValues([values]);else sh.appendRow(values);return teamObject_(values);}
+function deleteTeamMember_(id){const sh=ss_().getSheetByName(TAB.team),rows=sh.getDataRange().getValues();for(let i=rows.length-1;i>=1;i--)if(String(rows[i][0])===String(id)){sh.deleteRow(i+1);return;}throw Error("Team member not found.");}
 function publicProjects_(){return allProjects_().filter(p=>["published","completed"].includes(p.status));}
 function allProjects_(){const r=ss_().getSheetByName(TAB.projects).getDataRange().getValues();return r.slice(1).filter(x=>x[0]).map(projectObject_).sort((a,b)=>String(b.updatedAt).localeCompare(String(a.updatedAt)));}
 function projectObject_(r){return {id:String(r[0]),title:String(r[1]||""),category:String(r[2]||""),location:String(r[3]||""),description:String(r[4]||""),imageUrl:String(r[5]||""),status:String(r[6]||"draft"),createdAt:r[7] instanceof Date?r[7].toISOString():String(r[7]||""),updatedAt:r[8] instanceof Date?r[8].toISOString():String(r[8]||""),featured:r[9]===true||String(r[9]).toLowerCase()==="true"};}

@@ -1,0 +1,29 @@
+/* Hope & Care Bangladesh — international NGO visual refresh */
+:root{
+ --green-900:#142f49;--green-800:#1c4b68;--green-700:#286b87;--green-600:#378ba3;
+ --green-100:#e7f1f5;--green-50:#f4f8fa;--white:#fff;--text:#243447;--muted:#637386;
+ --border:#dce5eb;--surface:#f5f8fa;--hc-accent:#e8b13b;--container:1200px;
+ --shadow-sm:0 8px 24px rgba(20,47,73,.07);--shadow-lg:0 22px 60px rgba(20,47,73,.14);
+ --radius-sm:8px;--radius-md:16px;--radius-lg:24px;
+}
+body{color:#243447;background:#fff;font-family:Inter,"Noto Sans Bengali","Hind Siliguri",Arial,sans-serif;line-height:1.72}
+.site-header{background:rgba(255,255,255,.97);border-bottom:1px solid #e4eaf0;box-shadow:0 4px 22px rgba(20,47,73,.045)}
+.brand{color:#142f49}.brand-mark{background:#142f49;border-radius:8px}.brand-text strong{letter-spacing:-.035em}
+.main-navigation{gap:clamp(10px,1.4vw,22px)}.main-navigation a{color:#40546a;font-weight:650}.main-navigation a:hover,.main-navigation a.active{color:#1c4b68}.main-navigation a::after{background:#e8b13b}
+.button,.hc-btn{border-radius:7px;font-weight:750;letter-spacing:.005em}.button-primary,.button-small{background:#1c4b68}.button-primary:hover,.button-small:hover{background:#142f49}.button-outline{border-color:#9db4c2;color:#1c4b68}.button-outline:hover{background:#edf4f7}
+.hero,.hc-page-intro,.contact-hero,.donate-hero,.reports-hero,.team-hero,.volunteer-hero{background:linear-gradient(120deg,#edf3f6 0%,#f9fbfc 58%,#e7eff3 100%)}
+.hero h1,.hero h2,.section-heading h2,.section-header h2,.section-heading h2,.impact-grid h2{color:#142f49}
+.eyebrow,.hc-kicker,.hc-section-kicker{color:#a87513;letter-spacing:.14em}
+.section{padding-block:clamp(58px,7vw,96px)}
+.card,.project-card,.program-card,.impact-card,.contact-card,.report-card,.team-card,.hc-focus-card{border-radius:12px;border-color:#e0e8ed;box-shadow:0 8px 26px rgba(20,47,73,.055)}
+.card:hover,.project-card:hover,.program-card:hover,.hc-focus-card:hover{box-shadow:0 18px 42px rgba(20,47,73,.12);transform:translateY(-3px)}
+.hc-home-hero{min-height:610px;background:#142f49;position:relative;isolation:isolate}.hc-home-hero::before{content:"";position:absolute;inset:0;background:linear-gradient(90deg,rgba(12,34,54,.9),rgba(12,34,54,.52) 55%,rgba(12,34,54,.12));z-index:-1}.hc-home-hero-bg{background-position:center;background-size:cover;opacity:.78}.hc-home-hero-copy{max-width:760px;padding-block:clamp(90px,12vw,150px)}.hc-home-hero h1{color:#fff;max-width:760px;font-size:clamp(2.8rem,6vw,5.4rem);line-height:1.04;letter-spacing:-.045em}.hc-kicker{color:#f2c65d}.hc-btn-yellow{background:#e8b13b;color:#142f49;border-radius:6px}.hc-btn-yellow:hover{background:#f2c65d;color:#142f49}.hc-btn-ghost{border:1px solid rgba(255,255,255,.72);border-radius:6px;color:#fff}.hc-hero-trust{color:#fff}
+.hc-value-strip{background:#142f49;color:#fff}.hc-value-strip *{color:inherit}
+.hc-focus-section,.projects-section,.impact-section,.programs-section{background:#f5f8fa}
+.hc-focus-card{overflow:hidden}.hc-focus-card h3{color:#142f49}.hc-focus-green{background:#fff}
+.cta-section,.hc-bottom-cta{background:#1c4b68;color:#fff}.cta-section h2,.hc-bottom-cta h2,.cta-section p,.hc-bottom-cta p{color:#fff}
+footer,.site-footer{background:#10283d;color:#eaf0f4}footer h2,footer h3,footer h4,footer p,footer a,.site-footer *{color:inherit}footer a:hover{color:#f2c65d}
+input,textarea,select{border-radius:7px;border-color:#cbd8e0}input:focus,textarea:focus,select:focus{outline:2px solid #9bb9ca;outline-offset:1px}
+@media(max-width:900px){.main-navigation{gap:10px}.hc-home-hero{min-height:520px}}
+@media(max-width:760px){.site-header{backdrop-filter:blur(12px)}.main-navigation{background:#fff}.hc-home-hero-copy{padding-block:78px}.section{padding-block:56px}}
+.team-photo{width:100%;aspect-ratio:4/3;object-fit:cover;border-radius:10px;margin-bottom:14px}.team-photo-placeholder{display:grid;place-items:center;min-height:180px;background:#e8eff3;color:#1c4b68;border-radius:10px;font-weight:850;font-size:28px;margin-bottom:14px}
